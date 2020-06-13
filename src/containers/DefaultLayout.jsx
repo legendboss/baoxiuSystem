@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Layout, BackTop, message } from 'antd'
+import { Layout, BackTop, message, Modal, Input } from 'antd'
 import routes from '@/routes'
 import { menuToggleAction } from '@/store/actionCreators'
 // import avatar from '@/assets/images/user.jpg'
@@ -11,6 +11,7 @@ import '@/style/layout.scss'
 import AppHeader from './AppHeader.jsx'
 import AppAside from './AppAside.jsx'
 import AppFooter from './AppFooter.jsx'
+import AppDataShow from './AppDataShow.jsx'
 
 const { Content } = Layout
 
@@ -18,7 +19,11 @@ class DefaultLayout extends Component {
     state = {
         // avatar,
         show: true,
-        menu: []
+        menu: [],
+        dataShow: [100, 200, 300, 400],
+        pwVisible: false,
+        newPw: '',
+        newSurePw: ''
     }
 
     isLogin = () => {
@@ -31,11 +36,18 @@ class DefaultLayout extends Component {
         }
     }
 
-    loginOut = () => {
-        localStorage.clear()
-        this.props.history.push('/login')
-        message.success('登出成功!')
+    // loginOut = () => {
+    //     localStorage.clear()
+    //     this.props.history.push('/login')
+    //     message.success('登出成功!')
+    // }
+
+    modifyPassword = () => {
+        this.setState({
+            pwVisible: true,
+        });
     }
+    
     getMenu = menu => {
         let newMenu,
             auth = JSON.parse(localStorage.getItem('user')).auth
@@ -51,28 +63,39 @@ class DefaultLayout extends Component {
         this.isLogin()
     }
 
-    componentDidUpdate() {
-        // let { pathname } = this.props.location
-
-        // // 菜单收缩展开时 echarts 图表的自适应
-        // if (pathname === '/' || pathname === '/index') {
-        //     this.timer = setTimeout(() => {
-        //         echarts.init(document.getElementById('bar')).resize()
-        //         echarts.init(document.getElementById('line')).resize()
-        //         echarts.init(document.getElementById('pie')).resize()
-        //         echarts.init(document.getElementById('pictorialBar')).resize()
-        //         echarts.init(document.getElementById('scatter')).resize()
-        //     }, 500)
-        // } else {
-        //     this.timer = null
-        // }
+    // 新密码输入
+    onNewPwChange = (e) => {
+        this.setState({newPw: e.target.value})
     }
 
-    componentWillUnmount() {
-        // this.timer && clearTimeout(this.timer)
+    // 确认密码输入
+    onNewSurePwChange = (e) => {
+        this.setState({newSurePw: e.target.value})
     }
+
+    // model 确认
+    cpHandleOk= ()=> {
+        const {newPw, newSurePw} = this.state
+        console.log(newPw, newSurePw)
+        if(newPw==='') {
+            message.error('请输入密码!')
+            return false
+        }
+        if(newSurePw==='') {
+            message.error('请输入确认密码!')
+            return false
+        }
+        if(newPw!==newSurePw) {
+            message.error('两次输入的密码不一致，请重新输入!')
+            return false
+        }
+        // TODO 掉接口
+        this.setState({pwVisible: false})
+    }
+
 
     render() {
+        const {pwVisible, newPw, newSurePw} = this.state
         let { menuClick, menuToggle } = this.props
         let { auth } = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : ''
         return (
@@ -86,8 +109,10 @@ class DefaultLayout extends Component {
                         avatar={this.state.avatar}
                         show={this.state.show}
                         loginOut={this.loginOut}
+                        modifyPassword={this.modifyPassword}
                     />
                     <Content className='content'>
+                        <AppDataShow dataShow={this.state.dataShow}/>
                         <Switch>
                             {routes.map(item => {
                                 return (
@@ -112,6 +137,24 @@ class DefaultLayout extends Component {
                     </Content>
                     <AppFooter />
                 </Layout>
+                <Modal
+                    wrapClassName='change-password-modal'
+                    title="修改密码"
+                    visible={pwVisible}
+                    onOk={this.cpHandleOk}
+                    onCancel={()=> { this.setState({pwVisible: false})}}
+                    >
+                    <div>
+                        <div style={{marginBottom: '25px'}}>
+                            <label htmlFor="">新密码：</label>
+                            <Input placeholder="请输入密码"  type='password' value={newPw} onChange={this.onNewPwChange}/>
+                        </div>
+                        <div>
+                            <label htmlFor="">确认新密码：</label>
+                            <Input placeholder="请输入密码"  type='password' value={newSurePw} onChange={this.onNewSurePwChange}/>
+                        </div>
+                    </div>
+                </Modal>
             </Layout>
         )
     }

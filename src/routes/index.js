@@ -1,6 +1,7 @@
 import loadable from '@/utils/loadable'
 
 const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Index'))
+const RepairOrder = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/RepairOrder'))
 
 // // 通用
 // const ButtonView = loadable(() => import(/* webpackChunkName: 'button' */ '@/views/PublicView/Button'))
@@ -32,6 +33,7 @@ const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Ind
 
 const routes = [
     { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
+    { path: '/repairOrder', exact: true, name: 'RepairOrder', component: RepairOrder, auth: [1] },
     // { path: '/public/button', exact: false, name: '按钮', component: ButtonView, auth: [1] },
     // { path: '/public/icon', exact: false, name: '图标', component: IconView, auth: [1] },
     // { path: '/nav/dropdown', exact: false, name: '下拉菜单', component: DropdownView },

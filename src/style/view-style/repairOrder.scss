@@ -1,0 +1,25 @@
+.repairOrder {
+  p {
+      margin: 0;
+  }
+
+  .repairOrder-box {
+    padding: 25px 35px;
+    background-color: #fff;
+    margin: 0 !important;
+
+    label {
+      width: 50px;
+      text-align: left;
+      display: inline-block;
+    }
+    .ant-select {
+      margin-right: 55px;
+    }
+
+    .add-repair {
+      margin: 25px 0;
+      width: 130px;
+    }
+  }
+}

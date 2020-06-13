@@ -3,11 +3,11 @@ import { Layout, Row, Col } from 'antd'
 import screenfull from 'screenfull'
 import '@/style/view-style/index.scss'
 
-import aside1 from '../../assets/icon/aside1.svg'
-import aside2 from '../../assets/icon/aside2.svg'
-import aside3 from '../../assets/icon/aside3.svg'
-import aside4 from '../../assets/icon/aside4.svg'
-import aside5 from '../../assets/icon/aside5.svg'
+import aside1 from '@/assets/icon/aside1.svg'
+import aside2 from '@/assets/icon/aside2.svg'
+import aside3 from '@/assets/icon/aside3.svg'
+import aside4 from '@/assets/icon/aside4.svg'
+import aside5 from '@/assets/icon/aside5.svg'
 
 class Index extends Component {
     fullToggle = () => {
@@ -18,7 +18,7 @@ class Index extends Component {
     render() {
         return (
             <Layout className='index animated fadeIn'>
-                <Row gutter={24} className='index-header'>
+                {/* <Row gutter={24} className='index-header'>
                     <Col span={6}>
                         <div className='base-style'>
                             <p>今日完成数</p>
@@ -46,7 +46,7 @@ class Index extends Component {
                             <p>542</p>
                         </div>
                     </Col>
-                </Row>
+                </Row> */}
 
                 <Row gutter={8} className='index-box'>
                     <Col>

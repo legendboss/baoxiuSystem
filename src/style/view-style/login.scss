@@ -18,12 +18,20 @@
             .anticon  {
                 font-size: 16px !important;
             }
-            .ant-input-affix-wrapper .ant-input:not(:first-child) {
-                padding-left: 38px;
-            }
-            .ant-input {
-                border: 1px solid #fff;
+            .ant-input-affix-wrapper {
                 background: rgba(0,0,0,0.20);
+                border: 1px solid #fff;
+                .ant-input:not(:first-child) {
+                    padding-left: 8px;
+                }
+            }
+
+            .site-form-item-icon {
+                color: #fff;
+            }
+            
+            .ant-input {
+                background: rgba(178,184,187,1);
                 height: 40px;
                 color: #fff;
                 font-size: 16px;
