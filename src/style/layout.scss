@@ -1,0 +1,96 @@
+.app {
+    font-size: 1.6rem;
+    @media screen and (max-width: 960px) {
+        font-size: 1.4rem;
+    }
+    .aside {
+        position: fixed;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        background-image: linear-gradient(27deg, #0B74FF 5%, #3271FF 100%);
+        .logo {
+            width: 200px;
+            background: rgba(0,0,0,0.30);
+            height: 60px;
+            line-height: 60px;
+            box-sizing: border-box;
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+            img {
+                height: 100%;
+            }
+        }
+
+        .ant-menu {
+            .ant-menu-item {
+                width: 100%;
+                height: 60px;
+                margin: 0;
+
+                >a {
+                    font-size: 16px;
+                    line-height: 60px;
+                }
+            }
+        }
+
+        .ant-menu-dark {
+            background-color: #2c71ff;
+
+            .ant-menu-item-selected {
+                background-color: #2a65e5;
+            }
+        }
+    }
+
+    .header {
+        background-color: #fff;
+        padding: 0 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        .right {
+            display: flex;
+            align-items: center;
+
+            .ant-badge {
+                font-size: 16px;
+                top: 2px;
+            }
+
+            .ant-avatar {
+                width: 23px;
+                height: 23px;
+                line-height: 23px;
+                background-color: #eef0f3;
+
+            }
+            .ant-avatar-icon {
+                font-size: 18px;
+
+                .anticon-user svg {
+                    color: #000;
+                }
+            }
+
+            .user-name {
+                font-size: 14px;
+                color: rgba(0,0,0,0.65);
+                text-align: right;
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .content {
+        padding: 25px;
+        width: auto !important;
+    }
+
+    .footer {
+        text-align: center;
+    }
+
+    
+}
