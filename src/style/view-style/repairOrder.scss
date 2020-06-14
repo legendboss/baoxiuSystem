@@ -23,3 +23,24 @@
     }
   }
 }
+
+.add-repair-modal {
+  .ant-modal {
+    width: 600px !important;
+  }
+
+  .ant-form-item-label {
+    width: 90px;
+  }
+  
+  .ant-rate {
+    vertical-align: super;
+    line-height: 22px;
+  }
+
+  .add-repair-sure {
+    margin-top: 25px;
+    float: right;
+  }
+  
+}
