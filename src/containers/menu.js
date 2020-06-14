@@ -13,7 +13,7 @@ const menu = [
     },
     {
         title: '人员管理',
-        key: '/public',
+        key: '/personManage',
         icon: aside3,
         auth: [1]
     },

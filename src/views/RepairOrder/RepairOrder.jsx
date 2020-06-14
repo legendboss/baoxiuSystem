@@ -17,7 +17,7 @@ export default class RepairOrder extends Component {
           fetching: false,
           repairPeopleList: [],
           fileList: [],
-          addEngineerVisible: false
+          showEngineer: false
         }
         this.fetchRepairPeople = debounce(this.fetchRepairPeople, 800);
     }
@@ -70,7 +70,7 @@ export default class RepairOrder extends Component {
     }
 
     render() {
-      const { addRepairVisible, repairPeopleValue, repairPeopleList, fetching, fileList, addEngineerVisible } = this.state
+      const { addRepairVisible, repairPeopleValue, repairPeopleList, fetching, fileList, showEngineer } = this.state
 
       const columns = [
         {
@@ -240,8 +240,8 @@ export default class RepairOrder extends Component {
                               {fileList.length >= 4 ? null : uploadButton}
                             </Upload>
                           </div>
-                          <Button className='add-repair' type="primary" onClick={()=> {this.setState({addEngineerVisible: true})}}>＋ 添加工程师</Button>
-                          {addEngineerVisible &&
+                          <Button className='add-repair' type="primary" onClick={()=> {this.setState({showEngineer: true})}}>＋ 添加工程师</Button>
+                          {showEngineer &&
                             <Row style={{marginTop: '23px'}}>
                               <Col span={18}>
                                 <Form.Item label="添加工程师：">
@@ -264,7 +264,7 @@ export default class RepairOrder extends Component {
                             </Row>
                           }
                         </div>
-                        <Form.Item>
+                        <Form.Item style={{marginBottom: '0px'}}>
                           <Button
                             type='primary'
                             htmlType='submit'
