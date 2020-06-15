@@ -1,9 +1,9 @@
-.personManage {
+.userManage {
   p {
       margin: 0;
   }
 
-  .personManage-box {
+  .userManage-box {
     padding: 25px 35px;
     background-color: #fff;
     margin: 0 !important;
@@ -18,7 +18,7 @@
       margin-left: 10px;
     }
 
-    .add-engineer {
+    .add-user {
       margin: 25px 0;
       width: 130px;
     }
@@ -27,7 +27,7 @@
   
 }
 
-.add-engineer-modal {
+.add-user-modal {
   .ant-modal {
     width: 400px !important;
   }
@@ -36,9 +36,30 @@
     width: 90px;
   }
 
-  .add-engineer-sure {
+  .add-user-sure {
     margin-top: 25px;
     float: right;
     margin-left: 10px;
+  }
+}
+
+.repair-history-modal {
+  .ant-modal {
+    width: 600px !important;
+  }
+
+  .rh-box {
+    max-height: 497px;
+    overflow-y: scroll;
+
+    .img-box {
+      
+      img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin: 0 24px 24px 0;
+      }
+    }
   }
 }

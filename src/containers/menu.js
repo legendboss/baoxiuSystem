@@ -19,7 +19,7 @@ const menu = [
     },
     {
         title: '用户管理',
-        key: '/nav',
+        key: '/userManage',
         icon: aside2,
         auth: [1]
     },

@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-import { Layout, Button, Modal, Table, Form, Input, Row, Col, Space, Popconfirm, Badge } from 'antd'
-import '@/style/view-style/personManage.scss'
+import { Layout, Button, Modal, Table, Form, Input, Row, Col, Space, Divider } from 'antd'
+import '@/style/view-style/userManage.scss'
 const { Search } = Input;
 
-export default class PersonManage extends Component {
+export default class UserManage extends Component {
     constructor(props) {
         super(props)
         this.state = {
-          addEngineerVisible: false,
+          addUserVisible: false,
+          repairHistoryVisible: false
          
         }
     }
@@ -18,31 +19,32 @@ export default class PersonManage extends Component {
       
     }
 
-    onEngineerSearch = (e) => {
-      console.log(e)
+    onNameSearch = (e) => {
+      console.log(e.target.value)
     }
 
-    // 气泡确认
-    confirm = (e)=> {
-      console.log(e)
-    }
-
-    // model 确定
+    // 添加用户 model 确定
     arHandleOk =(e)=> {
       console.log(e)
       
     }
 
-    // 关闭销毁弹窗
+    // 关闭销毁添加用户弹窗
     onCloseResetModel = () => {
       this.setState({
-        addEngineerVisible: false
+        addUserVisible: false
       })
       this.formRef.current.resetFields();
-    };
+    }
+
+    onRepairHistory = () => {
+      this.setState({
+        repairHistoryVisible: true
+      })
+    }
 
     render() {
-      const { addEngineerVisible} = this.state
+      const { addUserVisible, repairHistoryVisible } = this.state
 
       const columns = [
         {
@@ -61,38 +63,12 @@ export default class PersonManage extends Component {
           key: 'address',
         },
         {
-          title: '状态',
-          dataIndex: 'address',
-          render: (text, record) => (
-            <div>
-              {record.age>33
-              ?(<Badge status="processing" text="启用" />)
-              :(<Badge status="default" text="禁用" />)
-              }
-            </div>
-          ),
-        },
-        {
           title: '操作',
           key: 'action',
           render: (text, record) => (
             <Space>
-              <Popconfirm
-                title="确定启用该用户吗？"
-                onConfirm={this.confirm}
-                okText="确定"
-                cancelText="取消"
-              >
-                <Button type="link" style={{padding: '0'}}>启用</Button>
-              </Popconfirm>
-              <Popconfirm
-                title="确定禁用该用户吗？"
-                onConfirm={this.confirm}
-                okText="确定"
-                cancelText="取消"
-              >
-                <Button type="link" style={{padding: '0'}}>禁用</Button>
-              </Popconfirm>
+              <Button type="link" style={{padding: '0'}} onClick={this.onRepairHistory}>报修历史</Button>
+              <Button type="link" style={{padding: '0'}}>设备管理</Button>
             </Space>
           ),
         },
@@ -120,16 +96,16 @@ export default class PersonManage extends Component {
       ];
 
       return (
-          <Layout className='personManage animated fadeIn'>
-              <div className='personManage-box'>
+          <Layout className='userManage animated fadeIn'>
+              <div className='userManage-box'>
                   <div>
-                      <label htmlFor="工程师">工程师: </label>
+                      <label htmlFor="姓名">姓名: </label>
                       <Search
-                        placeholder="请输入工程师"
-                        onSearch={this.onEngineerSearch}
+                        placeholder="请输入姓名"
+                        onSearch={this.onNameSearch}
                       />
                   </div>
-                  <Button className='add-engineer' type="primary" onClick={()=> {this.setState({addEngineerVisible: true})}}>＋ 添加工程师</Button>
+                  <Button className='add-user' type="primary" onClick={()=> {this.setState({addUserVisible: true})}}>＋ 添加用户</Button>
                   <Table
                     columns={columns}
                     dataSource={data} 
@@ -145,9 +121,9 @@ export default class PersonManage extends Component {
                   />
               </div>
               <Modal
-                  wrapClassName='add-engineer-modal'
-                  title="添加工程师"
-                  visible={addEngineerVisible}
+                  wrapClassName='add-user-modal'
+                  title="添加用户"
+                  visible={addUserVisible}
                   onCancel={this.onCloseResetModel}
                   footer={null}
                   >
@@ -180,19 +156,59 @@ export default class PersonManage extends Component {
                           <Button
                             type='primary'
                             htmlType='submit'
-                            className='add-engineer-sure'
+                            className='add-user-sure'
                             loading={this.state.loading}
                           >
                             确定
                           </Button>
                           <Button
-                            className='add-engineer-sure'
+                            className='add-user-sure'
                             onClick={this.onCloseResetModel}
                           >
                             取消
                           </Button>
                         </Form.Item>
                       </Form>
+                  </div>
+              </Modal>
+          
+              {/* 报修历史 */}
+              <Modal
+                  wrapClassName='repair-history-modal'
+                  title="报修历史"
+                  visible={repairHistoryVisible}
+                  onCancel={()=> {this.setState({repairHistoryVisible: false})}}
+                  footer={null}
+                  >
+                  <div className='rh-box'>
+                      <div>
+                        <p>报修时间：2020.03.02</p>
+                        <p>报修内容：电脑坏了</p>
+                        <p>保修附件：</p>
+                        <div className='img-box'>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                        </div>
+                        <Divider />
+                      </div>
+                      <div>
+                        <p>报修时间：2020.03.02</p>
+                        <p>报修内容：电脑坏了</p>
+                        <p>报修附件：</p>
+                        <div className='img-box'>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                          <img src="https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s" alt=""/>
+                        </div>
+                        <Divider />
+                      </div>
                   </div>
               </Modal>
           </Layout>
