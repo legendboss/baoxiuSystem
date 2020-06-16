@@ -4,6 +4,7 @@ const Index = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Ind
 const RepairOrder = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/RepairOrder'))
 const PersonManage = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/PersonManage'))
 const UserManage = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/UserManage'))
+const KnowledgeBase = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/KnowledgeBase'))
 
 // // 通用
 // const ButtonView = loadable(() => import(/* webpackChunkName: 'button' */ '@/views/PublicView/Button'))
@@ -38,6 +39,7 @@ const routes = [
     { path: '/repairOrder', exact: true, name: 'RepairOrder', component: RepairOrder, auth: [1] },
     { path: '/personManage', exact: true, name: 'PersonManage', component: PersonManage, auth: [1] },
     { path: '/userManage', exact: true, name: 'UserManage', component: UserManage, auth: [1] },
+    { path: '/knowledgeBase', exact: true, name: 'KnowledgeBase', component: KnowledgeBase, auth: [1] },
     
     // { path: '/public/button', exact: false, name: '按钮', component: ButtonView, auth: [1] },
     // { path: '/public/icon', exact: false, name: '图标', component: IconView, auth: [1] },

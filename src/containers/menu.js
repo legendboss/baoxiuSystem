@@ -25,7 +25,7 @@ const menu = [
     },
     {
         title: '知识库',
-        key: '/form',
+        key: '/knowledgeBase',
         icon: aside4,
         auth: [1]
     },

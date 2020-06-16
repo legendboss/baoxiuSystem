@@ -8,12 +8,14 @@ export default class UserManage extends Component {
         super(props)
         this.state = {
           addUserVisible: false,
-          repairHistoryVisible: false
+          repairHistoryVisible: false,
+          deviceManageVisible: false
          
         }
     }
 
     formRef = React.createRef();
+    formDeviceRef = React.createRef();
 
     componentDidMount() {
       
@@ -37,14 +39,30 @@ export default class UserManage extends Component {
       this.formRef.current.resetFields();
     }
 
+    // 报修历史打开
     onRepairHistory = () => {
       this.setState({
         repairHistoryVisible: true
       })
     }
 
+    // 设备管理打开
+    onDeviceManage = () => {
+      this.setState({
+        deviceManageVisible: true
+      })
+    }
+
+    // 关闭销毁设备管理弹窗
+    onCloseResetDeviceModel = () => {
+      this.setState({
+        deviceManageVisible: false
+      })
+      this.formDeviceRef.current.resetFields();
+    }
+
     render() {
-      const { addUserVisible, repairHistoryVisible } = this.state
+      const { addUserVisible, repairHistoryVisible, deviceManageVisible } = this.state
 
       const columns = [
         {
@@ -68,7 +86,7 @@ export default class UserManage extends Component {
           render: (text, record) => (
             <Space>
               <Button type="link" style={{padding: '0'}} onClick={this.onRepairHistory}>报修历史</Button>
-              <Button type="link" style={{padding: '0'}}>设备管理</Button>
+              <Button type="link" style={{padding: '0'}} onClick={this.onDeviceManage}>设备管理</Button>
             </Space>
           ),
         },
@@ -211,6 +229,94 @@ export default class UserManage extends Component {
                       </div>
                   </div>
               </Modal>
+              
+              {/* 设备管理 */}
+              <Modal
+                  wrapClassName='device-manage-modal'
+                  title="设备管理"
+                  visible={deviceManageVisible}
+                  onCancel={this.onCloseResetDeviceModel}
+                  footer={null}
+                  >
+                  <div>
+                      <Form
+                        ref={this.formDeviceRef}
+                        onFinish={this.arHandleOk}
+                      >
+                        <Row span={24}>
+                          <Col span={12}>
+                            <Form.Item 
+                              label="CPU："
+                              name="CPU"
+                            >
+                              <Input placeholder="请输入" autoComplete="off"/>
+                            </Form.Item>
+                          </Col>
+                          <Col span={12}>
+                            <Form.Item
+                              label="硬盘："
+                              name="yp"
+                            >
+                              <Input placeholder="请输入" autoComplete="off"/>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                        <Row span={24}>
+                          <Col span={12}>
+                            <Form.Item 
+                              label="打印机："
+                              name="dyj"
+                            >
+                              <Input placeholder="请输入" autoComplete="off"/>
+                            </Form.Item>
+                          </Col>
+                          <Col span={12}>
+                            <Form.Item
+                              label="内存："
+                              name="nc"
+                            >
+                              <Input placeholder="请输入" autoComplete="off"/>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                        <Row span={24}>
+                          <Col span={12}>
+                            <Form.Item 
+                              label="显卡："
+                              name="xk"
+                            >
+                              <Input placeholder="请输入" autoComplete="off"/>
+                            </Form.Item>
+                          </Col>
+                          <Col span={12}>
+                            <Form.Item
+                              label="主板："
+                              name="zb"
+                            >
+                              <Input placeholder="请输入" autoComplete="off"/>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                        <Form.Item style={{marginBottom: '0px'}}>
+                          <Button
+                            type='primary'
+                            htmlType='submit'
+                            className='add-user-sure'
+                            loading={this.state.loading}
+                          >
+                            确定
+                          </Button>
+                          <Button
+                            className='add-user-sure'
+                            onClick={this.onCloseResetDeviceModel}
+                          >
+                            取消
+                          </Button>
+                        </Form.Item>
+                      </Form>
+                  </div>
+              </Modal>
+          
           </Layout>
       )
     }

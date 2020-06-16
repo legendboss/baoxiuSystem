@@ -63,3 +63,19 @@
     }
   }
 }
+
+.device-manage-modal {
+  .ant-modal {
+    width: 780px !important;
+  }
+
+  .ant-form-item-label {
+    width: 66px;
+  }
+
+  .add-user-sure {
+    margin-top: 25px;
+    float: right;
+    margin-left: 10px;
+  }
+}
