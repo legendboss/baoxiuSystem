@@ -9,31 +9,39 @@
     margin: 0 !important;
   
     label {
+      width: 50px;
       text-align: left;
       display: inline-block;
     }
 
-    .ant-input-search {
-      width: 280px;
-      margin-left: 10px;
+    .ant-select {
+      margin-right: 55px;
     }
 
-    .add-engineer {
+    .add-useCases {
       margin: 25px 0;
       width: 130px;
     }
   }
 
+  .solve-way-text {
+    width: 400px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   
 }
 
-.add-engineer-modal {
+.add-useCases-modal {
   .ant-modal {
-    width: 400px !important;
+    width: 550px !important;
   }
 
   .ant-form-item-label {
-    width: 90px;
+    width: 100px;
   }
 
   .add-engineer-sure {

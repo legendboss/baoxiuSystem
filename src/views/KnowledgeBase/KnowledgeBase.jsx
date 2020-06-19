@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Button, Modal, Table, Form, Input, Row, Col, Space, Popconfirm, Badge, Select } from 'antd'
+import { Layout, Button, Modal, Table, Form, Input, Row, Col, Popconfirm, Select, Tooltip } from 'antd'
 import '@/style/view-style/knowledgeBase.scss'
 const { Option } = Select;
 
@@ -7,8 +7,8 @@ export default class KnowledgeBase extends Component {
     constructor(props) {
         super(props)
         this.state = {
-          addEngineerVisible: false,
-         
+          addUseCasesVisible: false,
+          
         }
     }
 
@@ -18,11 +18,18 @@ export default class KnowledgeBase extends Component {
       
     }
 
-    onEngineerSearch = (e) => {
+    // 类型select
+    typeChange = (e) => {
       console.log(e)
     }
 
-    // 气泡确认
+    // 解决办法
+    keyWordChange= (e) => {
+      console.log(e)
+    }
+
+
+    // 确定删除该用例吗？ 气泡确认
     confirm = (e)=> {
       console.log(e)
     }
@@ -36,64 +43,48 @@ export default class KnowledgeBase extends Component {
     // 关闭销毁弹窗
     onCloseResetModel = () => {
       this.setState({
-        addEngineerVisible: false
+        addUseCasesVisible: false
       })
       this.formRef.current.resetFields();
     };
 
     render() {
-      const { addEngineerVisible} = this.state
+      const { addUseCasesVisible } = this.state
 
       const columns = [
         {
-          title: '姓名',
+          title: '类型',
           dataIndex: 'name',
           key: 'name',
         },
         {
-          title: '添加时间',
+          title: '关键字',
           dataIndex: 'age',
           key: 'age',
+          align: 'left'
         },
         {
-          title: '手机号',
+          title: '解决方法',
           dataIndex: 'address',
-          key: 'address',
-        },
-        {
-          title: '状态',
-          dataIndex: 'address',
+          width: '400px',
           render: (text, record) => (
-            <div>
-              {record.age>33
-              ?(<Badge status="processing" text="启用" />)
-              :(<Badge status="default" text="禁用" />)
-              }
-            </div>
+            <Tooltip title={text}>
+              <div className='solve-way-text'>{text}</div>
+            </Tooltip>
           ),
         },
         {
           title: '操作',
           key: 'action',
           render: (text, record) => (
-            <Space>
-              <Popconfirm
-                title="确定启用该用户吗？"
-                onConfirm={this.confirm}
-                okText="确定"
-                cancelText="取消"
-              >
-                <Button type="link" style={{padding: '0'}}>启用</Button>
-              </Popconfirm>
-              <Popconfirm
-                title="确定禁用该用户吗？"
-                onConfirm={this.confirm}
-                okText="确定"
-                cancelText="取消"
-              >
-                <Button type="link" style={{padding: '0'}}>禁用</Button>
-              </Popconfirm>
-            </Space>
+            <Popconfirm
+              title="确定删除该用例吗？"
+              onConfirm={this.confirm}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button type="link" style={{padding: '0'}}>删除</Button>
+            </Popconfirm>
           ),
         },
       ];
@@ -103,7 +94,7 @@ export default class KnowledgeBase extends Component {
           key: '1',
           name: 'John Brown',
           age: 32,
-          address: 'New York No. 1 Lake Park'
+          address: 'New York No. 1 Lake ParkNew York No. 1 Lake ParkNew York No. 1 Lake ParkNew York No. 1 Lake Park'
         },
         {
           key: '2',
@@ -129,8 +120,10 @@ export default class KnowledgeBase extends Component {
                           <Option value='1'>硬件</Option>
                           <Option value='2'>软件</Option>
                       </Select>
+                      <label htmlFor="关键字" style={{width: '65px'}}>关键字: </label>
+                      <Select mode="tags" style={{ width: '300px' }}  onChange={this.keyWordChange}></Select>
                   </div>
-                  <Button className='add-engineer' type="primary" onClick={()=> {this.setState({addEngineerVisible: true})}}>＋ 添加工程师</Button>
+                  <Button className='add-useCases' type="primary" onClick={()=> {this.setState({addUseCasesVisible: true})}}>＋ 添加用例</Button>
                   <Table
                     columns={columns}
                     dataSource={data} 
@@ -146,9 +139,9 @@ export default class KnowledgeBase extends Component {
                   />
               </div>
               <Modal
-                  wrapClassName='add-engineer-modal'
-                  title="添加工程师"
-                  visible={addEngineerVisible}
+                  wrapClassName='add-useCases-modal'
+                  title="添加用例"
+                  visible={addUseCasesVisible}
                   onCancel={this.onCloseResetModel}
                   footer={null}
                   >
@@ -160,20 +153,29 @@ export default class KnowledgeBase extends Component {
                         <Row span={24}>
                           <Col span={21}>
                             <Form.Item 
-                              label="姓名："
-                              name="name"
-                              rules={[{ required: true, message: '请输入姓名!' }]}
+                              label="类型："
+                              name="mType"
+                              rules={[{ required: true, message: '请输入类型!' }]}
                             >
-                              <Input placeholder="请输入姓名" autoComplete="off"/>
+                              <Input placeholder="请输入类型" autoComplete="off"/>
                             </Form.Item>
                           </Col>
                           <Col span={21}>
                             <Form.Item
-                              label="手机号："
-                              name="phone"
-                              rules= {[{ required: true, message: '请输入正确手机号!' }, {pattern: /^1[3|4|5|7|8][0-9]\d{8}$/, message: '请输入正确手机号'}]}
+                              label="关键字："
+                              name="mKeyword"
+                              rules= {[{ required: true, message: '请输入关键字!' }]}
                             >
-                              <Input placeholder="请输入手机号" autoComplete="off"/>
+                              <Select mode="tags" style={{ width: '300px' }}></Select>
+                            </Form.Item>
+                          </Col>
+                          <Col span={21}>
+                            <Form.Item
+                              label="解决方法："
+                              name="mSolveWay"
+                              rules= {[{ required: true, message: '请输入解决方法!' }]}
+                            >
+                              <Input.TextArea />
                             </Form.Item>
                           </Col>
                         </Row>
