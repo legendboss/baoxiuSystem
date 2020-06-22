@@ -1,0 +1,27 @@
+.report {
+  p {
+      margin: 0;
+  }
+
+  .report-box {
+    padding: 25px 35px;
+    background-color: #fff;
+    margin: 0 !important;
+
+    label {
+      width: 60px;
+      text-align: left;
+      display: inline-block;
+    }
+
+    .ant-select {
+      width: 200px;
+      margin-right: 55px;
+    }
+
+    .ant-radio-button-wrapper {
+      width: auto;
+    }
+    
+  }
+}

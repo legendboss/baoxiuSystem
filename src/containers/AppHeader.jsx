@@ -6,7 +6,7 @@ import { BellOutlined, UserOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from
 const { Header } = Layout
 
 const AppHeader = props => {
-    let { menuClick, avatar, menuToggle, modifyPassword } = props
+    let { menuClick, avatar, userName, menuToggle, modifyPassword } = props
     const menu = (
         <Menu>
             <Menu.Item onClick={modifyPassword}>
@@ -41,7 +41,7 @@ const AppHeader = props => {
                     <Dropdown overlay={menu} overlayStyle={{ width: '20rem' }}>
                         <div className='ant-dropdown-link'>
                             <Avatar icon={<UserOutlined />} src={avatar} alt='avatar' style={{ cursor: 'pointer' }} />
-                            <span className='user-name'>用户名</span>
+                            <span className='user-name'>{userName}</span>
                         </div>
                     </Dropdown>
                 </div>

@@ -10,28 +10,28 @@ const AppDataShow = props => {
           <Col span={6}>
               <div className='base-style'>
                   <p>今日完成数</p>
-                  <p>{dataShow[0]}</p>
+                  <p>{dataShow.todayFinish}</p>
                   <div className='line'></div>
               </div>
           </Col>
           <Col span={6}>
               <div className='base-style'>
                   <p>今日待完成数</p>
-                  <p>{dataShow[1]}</p>
+                  <p>{dataShow.todayUnFinish}</p>
                   <div className='line'></div>
               </div>
           </Col>
           <Col span={6}>
               <div className='base-style'>
                   <p>今日总数</p>
-                  <p>{dataShow[2]}</p>
+                  <p>{dataShow.todayTotal}</p>
                   <div className='line'></div>
               </div>
           </Col>
           <Col span={6}>
               <div className='base-style'>
                   <p>累计完成数</p>
-                  <p>{dataShow[3]}</p>
+                  <p>{dataShow.total}</p>
               </div>
           </Col>
       </Row>
@@ -40,7 +40,7 @@ const AppDataShow = props => {
 }
 
 AppDataShow.propTypes = {
-  dataShow: PropTypes.array,
+  dataShow: PropTypes.object,
 }
 
 export default AppDataShow

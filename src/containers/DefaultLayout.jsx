@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Layout, BackTop, message, Modal, Input } from 'antd'
+import axios from '@/api'
+import { API } from '@/api/config'
 import routes from '@/routes'
 import { menuToggleAction } from '@/store/actionCreators'
 // import avatar from '@/assets/images/user.jpg'
@@ -14,28 +16,68 @@ import AppFooter from './AppFooter.jsx'
 import AppDataShow from './AppDataShow.jsx'
 
 const { Content } = Layout
+const ws = new WebSocket('ws://qikeqike.qicp.vip/count');
 
 class DefaultLayout extends Component {
     state = {
         // avatar,
+        userName: '',
         show: true,
         menu: [],
-        dataShow: [100, 200, 300, 400],
+        dataShow: {},
         pwVisible: false,
-        newPw: '',
-        newSurePw: ''
+        oldPwd: '',
+        newPwd: '',
+        reNewPwd: ''
+    }
+
+    componentDidMount() {
+        this.isLogin()
+        ws.onopen = function (e) {
+            console.log('连接上 ws 服务端了');
+            ws.send({});
+        }
+        ws.onmessage = (msg)=> { 
+            console.log('接收服务端发过来的消息: ', msg ); 
+        }; 
+        ws.onclose = function (e) {
+            console.log('ws 连接关闭了');
+            console.log(e);
+        }
     }
 
     isLogin = () => {
-        if (!localStorage.getItem('user')) {
+        if (!localStorage.getItem('userName')) {
             this.props.history.push('/login')
         } else {
+            // 获取头部数据
+            this.getTopData()
             this.setState({
+                userName: JSON.parse(localStorage.getItem('userName')),
                 menu: this.getMenu(menu)
             })
         }
     }
 
+    // 
+    
+    // 获取头部数据
+    getTopData = () => {
+        axios
+            .get(`${API}/count`, {})
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.setState({
+                        dataShow: res.data.data
+                    })
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+    }
+
+    // 退出登录
     // loginOut = () => {
     //     localStorage.clear()
     //     this.props.history.push('/login')
@@ -50,7 +92,7 @@ class DefaultLayout extends Component {
     
     getMenu = menu => {
         let newMenu,
-            auth = JSON.parse(localStorage.getItem('user')).auth
+            auth = JSON.parse(localStorage.getItem('userName')).auth
         if (!auth) {
             return menu
         } else {
@@ -59,43 +101,57 @@ class DefaultLayout extends Component {
         }
     }
 
-    componentDidMount() {
-        this.isLogin()
+    // 旧密码输入
+    onOldPwChange = (e) => {
+        this.setState({oldPwd: e.target.value})
     }
 
     // 新密码输入
     onNewPwChange = (e) => {
-        this.setState({newPw: e.target.value})
+        this.setState({newPwd: e.target.value})
     }
 
     // 确认密码输入
     onNewSurePwChange = (e) => {
-        this.setState({newSurePw: e.target.value})
+        this.setState({reNewPwd: e.target.value})
     }
 
     // model 确认
     cpHandleOk= ()=> {
-        const {newPw, newSurePw} = this.state
-        console.log(newPw, newSurePw)
-        if(newPw==='') {
+        const {oldPwd, newPwd, reNewPwd } = this.state
+        console.log(oldPwd, newPwd, reNewPwd)
+        if(oldPwd==='') {
+            message.error('请输入旧密码!')
+            return false
+        }
+        if(newPwd==='') {
             message.error('请输入密码!')
             return false
         }
-        if(newSurePw==='') {
+        if(reNewPwd==='') {
             message.error('请输入确认密码!')
             return false
         }
-        if(newPw!==newSurePw) {
+        if(newPwd!==reNewPwd) {
             message.error('两次输入的密码不一致，请重新输入!')
             return false
         }
         // TODO 掉接口
-        this.setState({pwVisible: false})
+        axios
+            .post(`${API}/changPwd`, {oldPwd, newPwd, reNewPwd})
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.setState({pwVisible: false})
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
     }
 
 
     render() {
-        const {pwVisible, newPw, newSurePw} = this.state
+        const { userName, pwVisible, oldPwd, newPwd, reNewPwd, dataShow } = this.state
         let { menuClick, menuToggle } = this.props
         let { auth } = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : ''
         return (
@@ -107,12 +163,13 @@ class DefaultLayout extends Component {
                         menuToggle={menuToggle}
                         menuClick={menuClick}
                         avatar={this.state.avatar}
+                        userName={userName}
                         show={this.state.show}
                         loginOut={this.loginOut}
                         modifyPassword={this.modifyPassword}
                     />
                     <Content className='content'>
-                        <AppDataShow dataShow={this.state.dataShow}/>
+                        <AppDataShow dataShow={dataShow} />
                         <Switch>
                             {routes.map(item => {
                                 return (
@@ -146,12 +203,16 @@ class DefaultLayout extends Component {
                     >
                     <div>
                         <div style={{marginBottom: '25px'}}>
+                            <label htmlFor="">旧密码：</label>
+                            <Input placeholder="请输入旧密码"  type='password' value={oldPwd} onChange={this.onOldPwChange}/>
+                        </div>
+                        <div style={{marginBottom: '25px'}}>
                             <label htmlFor="">新密码：</label>
-                            <Input placeholder="请输入密码"  type='password' value={newPw} onChange={this.onNewPwChange}/>
+                            <Input placeholder="请输入密码"  type='password' value={newPwd} onChange={this.onNewPwChange}/>
                         </div>
                         <div>
                             <label htmlFor="">确认新密码：</label>
-                            <Input placeholder="请输入密码"  type='password' value={newSurePw} onChange={this.onNewSurePwChange}/>
+                            <Input placeholder="请输入密码"  type='password' value={reNewPwd} onChange={this.onNewSurePwChange}/>
                         </div>
                     </div>
                 </Modal>

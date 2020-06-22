@@ -8,7 +8,7 @@ const instance = axios.create({
 })
 
 // 设置post请求头
-instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+instance.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
 
 // 添加请求拦截器
 instance.interceptors.request.use(
@@ -35,6 +35,8 @@ instance.interceptors.response.use(
         // 相应错误处理
         // 比如： token 过期， 无权限访问， 路径不存在， 服务器问题等
         switch (error.response.status) {
+            case 400:
+                break
             case 401:
                 break
             case 403:

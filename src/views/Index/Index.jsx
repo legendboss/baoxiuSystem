@@ -8,6 +8,7 @@ import aside2 from '@/assets/icon/aside2.svg'
 import aside3 from '@/assets/icon/aside3.svg'
 import aside4 from '@/assets/icon/aside4.svg'
 import aside5 from '@/assets/icon/aside5.svg'
+import aside6 from '@/assets/icon/aside6.svg'
 
 class Index extends Component {
     fullToggle = () => {
@@ -18,66 +19,54 @@ class Index extends Component {
     render() {
         return (
             <Layout className='index animated fadeIn'>
-                {/* <Row gutter={24} className='index-header'>
-                    <Col span={6}>
-                        <div className='base-style'>
-                            <p>今日完成数</p>
-                            <p>100</p>
-                            <div className='line'></div>
-                        </div>
-                    </Col>
-                    <Col span={6}>
-                        <div className='base-style'>
-                            <p>今日待完成数</p>
-                            <p>77</p>
-                            <div className='line'></div>
-                        </div>
-                    </Col>
-                    <Col span={6}>
-                        <div className='base-style'>
-                            <p>今日总数</p>
-                            <p>234</p>
-                            <div className='line'></div>
-                        </div>
-                    </Col>
-                    <Col span={6}>
-                        <div className='base-style'>
-                            <p>累计完成数</p>
-                            <p>542</p>
-                        </div>
-                    </Col>
-                </Row> */}
-
                 <Row gutter={8} className='index-box'>
                     <Col>
                         <div className='items'>
-                            <img src={aside1} alt=''/>
+                            <a href="#/repairOrder">
+                                <img src={aside1} alt=''/>
+                            </a>
                             <p>维修单</p>
                             <span className='tip'>2</span>
                         </div>
                     </Col>
                     <Col>
                         <div className='items'>
-                            <img src={aside4} alt=''/>
+                            <a href="#/knowledgeBase">
+                                <img src={aside4} alt=''/>
+                            </a>
                             <p>知识库</p>
                         </div>
                     </Col>
                     <Col>
                         <div className='items'>
-                            <img src={aside2} alt=''/>
-                            <p>人员管理</p>
+                            <a href="#/userManage">
+                                <img src={aside2} alt=''/>
+                            </a>
+                            <p>用户管理</p>
                         </div>
                     </Col>
                     <Col>
                         <div className='items'>
-                            <img src={aside5} alt=''/>
+                            <a href="#/about">
+                                <img src={aside5} alt=''/>
+                            </a>
                             <p>报表</p>
                         </div>
                     </Col>
                     <Col>
                         <div className='items'>
-                            <img src={aside3} alt=''/>
+                            <a href="#/personManage">
+                                <img src={aside3} alt=''/>
+                            </a>
                             <p>人员管理</p>
+                        </div>
+                    </Col>
+                    <Col>
+                        <div className='items'>
+                            <a href="#/solution">
+                                <img src={aside6} alt=''/>
+                            </a>
+                            <p>解决方案管理</p>
                         </div>
                     </Col>
                 </Row>
