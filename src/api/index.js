@@ -43,6 +43,8 @@ instance.interceptors.response.use(
                 break
             case 404:
                 break
+            case 405:
+                break
             case 500:
                 break
             default:

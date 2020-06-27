@@ -18,16 +18,16 @@
             position: relative;
             margin-bottom: 25px;
 
-            p:nth-of-type(1){
+            p:nth-of-type(1) {
                 font-size: 16px;
-                color: rgba(0,0,0,0.45);
+                color: rgba(0, 0, 0, 0.45);
                 text-align: center;
                 line-height: 22px;
                 margin-bottom: 10px;
             }
-            p:nth-of-type(2){
+            p:nth-of-type(2) {
                 font-size: 28px;
-                color: #1973FF;
+                color: #1973ff;
                 text-align: center;
                 line-height: 32px;
                 font-weight: 500;
@@ -37,7 +37,7 @@
         .line {
             width: 1px;
             height: 58px;
-            background: #E8E8E8;
+            background: #e8e8e8;
             position: absolute;
             right: 0;
             top: 26px;
@@ -63,13 +63,18 @@
         justify-content: space-between;
 
         .ant-col {
-            width: 84px;
+            width: 100px;
         }
 
         .items {
-            width: 84px;
+            width: 100px;
             height: 128px;
             position: relative;
+
+            img {
+                display: block;
+                margin: 0 auto;
+            }
 
             p {
                 font-size: 16px;
@@ -81,20 +86,21 @@
 
             .tip {
                 font-size: 14px;
-                color: #FFFFFF;
+                color: #ffffff;
                 border-radius: 50%;
                 width: 20px;
                 height: 20px;
                 text-align: center;
                 line-height: 20px;
-                background: #FF4D4F;
+                background: #ff4d4f;
                 position: absolute;
-                top: -20px;
-                right: -15px;
+                top: -15px;
+                right: -10px;
             }
         }
     }
-    .ant-row::before, .ant-row::after{
+    .ant-row::before,
+    .ant-row::after {
         content: none;
     }
 }

@@ -1,27 +1,30 @@
 .report {
-  p {
-      margin: 0;
-  }
-
-  .report-box {
-    padding: 25px 35px;
-    background-color: #fff;
-    margin: 0 !important;
-
-    label {
-      width: 60px;
-      text-align: left;
-      display: inline-block;
+    p {
+        margin: 0;
     }
 
-    .ant-select {
-      width: 200px;
-      margin-right: 55px;
-    }
+    .report-box {
+        padding: 25px 35px;
+        background-color: #fff;
+        margin: 0 !important;
 
-    .ant-radio-button-wrapper {
-      width: auto;
+        label {
+            text-align: left;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .ant-select {
+            width: 200px;
+            margin-right: 55px;
+        }
+
+        .ant-picker {
+            margin-right: 55px;
+        }
+
+        .ant-radio-button-wrapper {
+            width: auto;
+        }
     }
-    
-  }
 }
