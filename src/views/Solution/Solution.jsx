@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Layout, Button, Modal, Table, Form, Input, Row, Col, Space, Select, message } from 'antd'
+import { Layout, Button, Modal, Table, Form, Input, Row, Col, Space, Select, message, Popconfirm } from 'antd'
 import axios from '@/api'
 import { API } from '@/api/config'
 import '@/style/view-style/solution.scss'
+const { Option } = Select
 
 export default class Solution extends Component {
     constructor(props) {
@@ -13,7 +14,9 @@ export default class Solution extends Component {
             listData: [],
             total: 0,
             listLoading: false,
-            addUseCasesVisible: false
+            solutionVisible: false,
+            solutionRowData: {},
+            solutionSureLoading: false
         }
     }
 
@@ -65,26 +68,89 @@ export default class Solution extends Component {
 
     // 提交打开model
     onOpenSubmit = e => {
+        console.log(e)
         this.setState({
-            addUseCasesVisible: true
+            solutionVisible: true,
+            solutionRowData: e
+        })
+        // 回显数据
+        this.formRef.current.setFieldsValue({
+            type: e.type,
+            fixContent: e.fixContent,
+            mKeyword: [e.softName]
         })
     }
 
     // model 确定
     arHandleOk = e => {
+        // 1: 添加知识库 2: 变更解决方案状态
         console.log(e)
+        const model = {
+            content: e.fixContent,
+            keyWord: e.mKeyword.toString(),
+            type: e.type
+        }
+        this.setState({ solutionSureLoading: true })
+        axios
+            .get(`${API}/knowledgeAdd`, { params: model })
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.onChangeFixStatus()
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+        this.setState({ solutionSureLoading: false })
+    }
+
+    // 变更解决方案状态
+    onChangeFixStatus = () => {
+        const { solutionRowData } = this.state
+        const model = {
+            id: solutionRowData.id,
+            status: 1
+        }
+        axios
+            .post(`${API}/fixOrderChangeStatus`, model)
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.onCloseResetModel()
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
     }
 
     // 关闭销毁弹窗
     onCloseResetModel = () => {
         this.setState({
-            addUseCasesVisible: false
+            solutionVisible: false
         })
         this.formRef.current.resetFields()
     }
 
+    // 忽略
+    onIgnoreSolution = e => {
+        const model = {
+            id: e,
+            status: 2
+        }
+        axios
+            .post(`${API}/fixOrderChangeStatus`, model)
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.getFixList()
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+    }
+
     render() {
-        const { startPage, listData, total, listLoading, addUseCasesVisible } = this.state
+        const { startPage, listData, total, listLoading, solutionVisible, solutionSureLoading } = this.state
 
         const columns = [
             {
@@ -94,39 +160,64 @@ export default class Solution extends Component {
             },
             {
                 title: '类型',
-                dataIndex: 'age',
-                key: 'age',
-                align: 'left'
+                dataIndex: 'type',
+                render: (text, record) => {
+                    let typeStr = ''
+                    switch (record.type) {
+                        case 0:
+                            typeStr = '系统'
+                            break
+                        case 1:
+                            typeStr = '硬件'
+                            break
+                        case 2:
+                            typeStr = '软件'
+                            break
+                        default:
+                            break
+                    }
+                    return <span>{typeStr}</span>
+                }
             },
             {
                 title: '软件名',
-                dataIndex: 'age',
-                key: 'age',
-                align: 'left'
+                dataIndex: 'softName'
             },
             {
                 title: '解决方案',
-                dataIndex: 'address',
-                key: 'age',
-                align: 'left'
+                dataIndex: 'fixContent'
             },
             {
                 title: '操作',
                 key: 'action',
                 render: (text, record) => (
-                    <Space>
-                        <Button
-                            type='link'
-                            style={{ padding: '0' }}
-                            onClick={() => {
-                                this.onOpenSubmit(text)
-                            }}>
-                            提交
-                        </Button>
-                        <Button type='link' style={{ padding: '0' }}>
-                            忽略
-                        </Button>
-                    </Space>
+                    <div>
+                        {record.status === 0 && (
+                            <Space>
+                                <Button
+                                    type='link'
+                                    style={{ padding: '0' }}
+                                    onClick={() => {
+                                        this.onOpenSubmit(record)
+                                    }}>
+                                    提交
+                                </Button>
+                                <Popconfirm
+                                    title='确定忽略该方案吗？'
+                                    onConfirm={() => {
+                                        this.onIgnoreSolution(record.id)
+                                    }}
+                                    okText='确定'
+                                    cancelText='取消'>
+                                    <Button type='link' style={{ padding: '0' }}>
+                                        忽略
+                                    </Button>
+                                </Popconfirm>
+                            </Space>
+                        )}
+                        {record.status === 1 && <span>已提交</span>}
+                        {record.status === 2 && <span>已忽略</span>}
+                    </div>
                 )
             }
         ]
@@ -151,18 +242,23 @@ export default class Solution extends Component {
                 <Modal
                     wrapClassName='add-useCases-modal'
                     title='解决方案'
-                    visible={addUseCasesVisible}
+                    visible={solutionVisible}
                     onCancel={this.onCloseResetModel}
-                    footer={null}>
+                    footer={null}
+                    forceRender>
                     <div>
                         <Form ref={this.formRef} onFinish={this.arHandleOk}>
                             <Row span={24}>
                                 <Col span={21}>
                                     <Form.Item
                                         label='类型：'
-                                        name='mType'
+                                        name='type'
                                         rules={[{ required: true, message: '请输入类型!' }]}>
-                                        <Input placeholder='请输入类型' autoComplete='off' />
+                                        <Select style={{ width: 200 }}>
+                                            <Option value={0}>系统</Option>
+                                            <Option value={1}>硬件</Option>
+                                            <Option value={2}>软件</Option>
+                                        </Select>
                                     </Form.Item>
                                 </Col>
                                 <Col span={21}>
@@ -176,7 +272,7 @@ export default class Solution extends Component {
                                 <Col span={21}>
                                     <Form.Item
                                         label='解决方法：'
-                                        name='mSolveWay'
+                                        name='fixContent'
                                         rules={[{ required: true, message: '请输入解决方法!' }]}>
                                         <Input.TextArea />
                                     </Form.Item>
@@ -187,7 +283,7 @@ export default class Solution extends Component {
                                     type='primary'
                                     htmlType='submit'
                                     className='add-engineer-sure'
-                                    loading={this.state.loading}>
+                                    loading={solutionSureLoading}>
                                     确定
                                 </Button>
                                 <Button className='add-engineer-sure' onClick={this.onCloseResetModel}>

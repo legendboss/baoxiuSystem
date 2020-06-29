@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Button, Modal, Table, Form, Input, Row, Col, Space, Divider, message } from 'antd'
+import { Layout, Button, Modal, Table, Form, Input, Row, Col, Space, Divider, message, Empty } from 'antd'
 import '@/style/view-style/userManage.scss'
 import axios from '@/api'
 import { API } from '@/api/config'
@@ -17,8 +17,11 @@ export default class UserManage extends Component {
             listLoading: false,
             addUserVisible: false,
             addUserSureLoading: false,
+            deviceSureLoading: false,
             repairHistoryVisible: false,
-            deviceManageVisible: false
+            deviceManageVisible: false,
+            historyList: [], // 报修历史数据
+            deviceInfo: {} // 设备详情
         }
     }
 
@@ -108,17 +111,68 @@ export default class UserManage extends Component {
     }
 
     // 报修历史打开
-    onRepairHistory = () => {
+    onRepairHistory = data => {
+        const model = { userId: data.id }
+        axios
+            .get(`${API}/orderHistory`, { params: model })
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.setState({
+                        historyList: res.data.data
+                    })
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
         this.setState({
             repairHistoryVisible: true
         })
     }
 
     // 设备管理打开
-    onDeviceManage = () => {
+    onDeviceManage = data => {
+        const model = { userId: data.id }
+        axios
+            .get(`${API}/deviceInfo`, { params: model })
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.formDeviceRef.setFieldsValue(res.data.data)
+                    this.setState({
+                        deviceInfo: res.data.data
+                    })
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
         this.setState({
-            deviceManageVisible: true
+            deviceManageVisible: true,
+            deviceRowData: data
         })
+    }
+
+    // 设备管理 model 确定
+    onDeviceOk = e => {
+        const { deviceRowData } = this.state
+        console.log(e)
+        const model = {
+            ...e,
+            userId: deviceRowData.id
+        }
+        this.setState({ deviceSureLoading: true })
+        axios
+            .post(`${API}/deviceEdit`, model)
+            .then(res => {
+                if (res.data.code === 200) {
+                    message.success('保存成功！')
+                    this.onCloseResetDeviceModel()
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+        this.setState({ deviceSureLoading: false })
     }
 
     // 关闭销毁设备管理弹窗
@@ -138,7 +192,9 @@ export default class UserManage extends Component {
             addUserVisible,
             addUserSureLoading,
             repairHistoryVisible,
-            deviceManageVisible
+            deviceManageVisible,
+            historyList,
+            deviceSureLoading
         } = this.state
 
         const columns = [
@@ -156,13 +212,22 @@ export default class UserManage extends Component {
             },
             {
                 title: '操作',
-                key: 'action',
                 render: (text, record) => (
                     <Space>
-                        <Button type='link' style={{ padding: '0' }} onClick={this.onRepairHistory}>
+                        <Button
+                            type='link'
+                            style={{ padding: '0' }}
+                            onClick={() => {
+                                this.onRepairHistory(record)
+                            }}>
                             报修历史
                         </Button>
-                        <Button type='link' style={{ padding: '0' }} onClick={this.onDeviceManage}>
+                        <Button
+                            type='link'
+                            style={{ padding: '0' }}
+                            onClick={() => {
+                                this.onDeviceManage(record)
+                            }}>
                             设备管理
                         </Button>
                     </Space>
@@ -254,70 +319,31 @@ export default class UserManage extends Component {
                     }}
                     footer={null}>
                     <div className='rh-box'>
-                        <div>
-                            <p>报修时间：2020.03.02</p>
-                            <p>报修内容：电脑坏了</p>
-                            <p>保修附件：</p>
-                            <div className='img-box'>
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                            </div>
-                            <Divider />
-                        </div>
-                        <div>
-                            <p>报修时间：2020.03.02</p>
-                            <p>报修内容：电脑坏了</p>
-                            <p>报修附件：</p>
-                            <div className='img-box'>
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                                <img
-                                    src='https://test.ezrpro.com:8444/img/13/01542bab5496b0.jpg?size=320x210s'
-                                    alt=''
-                                />
-                            </div>
-                            <Divider />
-                        </div>
+                        {historyList.length > 0 ? (
+                            historyList.map((item, index) => {
+                                return (
+                                    <div key={index}>
+                                        <p>报修时间：{item.addTimeStr}</p>
+                                        <p>报修内容：{item.content}</p>
+                                        <p>报修附件：</p>
+                                        <div className='img-box'>
+                                            {item.applicationPhoto.length > 0 ? (
+                                                <div>
+                                                    {item.applicationPhoto.map(item2 => {
+                                                        return <img src={item2} alt='' />
+                                                    })}
+                                                </div>
+                                            ) : (
+                                                <span>无</span>
+                                            )}
+                                        </div>
+                                        {historyList.length > 1 && <Divider />}
+                                    </div>
+                                )
+                            })
+                        ) : (
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        )}
                     </div>
                 </Modal>
 
@@ -329,39 +355,39 @@ export default class UserManage extends Component {
                     onCancel={this.onCloseResetDeviceModel}
                     footer={null}>
                     <div>
-                        <Form ref={this.formDeviceRef} onFinish={this.arHandleOk}>
+                        <Form ref={this.formDeviceRef} onFinish={this.onDeviceOk}>
                             <Row span={24}>
                                 <Col span={12}>
-                                    <Form.Item label='CPU：' name='CPU'>
+                                    <Form.Item label='CPU：' name='cpu'>
                                         <Input placeholder='请输入' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item label='硬盘：' name='yp'>
+                                    <Form.Item label='硬盘：' name='system'>
                                         <Input placeholder='请输入' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
                             </Row>
                             <Row span={24}>
                                 <Col span={12}>
-                                    <Form.Item label='打印机：' name='dyj'>
+                                    <Form.Item label='打印机：' name='printer'>
                                         <Input placeholder='请输入' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item label='内存：' name='nc'>
+                                    <Form.Item label='内存：' name='hardDisk'>
                                         <Input placeholder='请输入' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
                             </Row>
                             <Row span={24}>
                                 <Col span={12}>
-                                    <Form.Item label='显卡：' name='xk'>
+                                    <Form.Item label='显卡：' name='videoCard'>
                                         <Input placeholder='请输入' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
-                                    <Form.Item label='主板：' name='zb'>
+                                    <Form.Item label='主板：' name='mainBoard'>
                                         <Input placeholder='请输入' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
@@ -371,7 +397,7 @@ export default class UserManage extends Component {
                                     type='primary'
                                     htmlType='submit'
                                     className='add-user-sure'
-                                    loading={this.state.loading}>
+                                    loading={deviceSureLoading}>
                                     确定
                                 </Button>
                                 <Button className='add-user-sure' onClick={this.onCloseResetDeviceModel}>
