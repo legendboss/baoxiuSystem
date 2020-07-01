@@ -13,7 +13,9 @@ import {
     Upload,
     Spin,
     message,
-    Badge
+    Badge,
+    Rate,
+    Divider
 } from 'antd'
 import '@/style/view-style/repairOrder.scss'
 import locale from 'antd/es/date-picker/locale/zh_CN'
@@ -42,12 +44,23 @@ export default class RepairOrder extends Component {
             repairPeopleValue: [],
             fetching: false,
             repairPeopleList: [],
+            engineerValue: [],
+            engineerList: [],
+            engineerFetching: false,
             fileList: [],
             showEngineer: false,
-            sysType: '' // 系统类型
+            sysType: '', // 系统类型
+            repairSureLoading: false,
+            repairDetailVisible: false, // 详情model
+            orderDetailInfo: {},
+            contractVo: {},
+            fixVo: {},
+            userDevice: {}
         }
         this.fetchRepairPeople = debounce(this.fetchRepairPeople, 800)
     }
+
+    formRef = React.createRef()
 
     componentDidMount() {
         // 获取列表
@@ -142,29 +155,30 @@ export default class RepairOrder extends Component {
     // 报修人select
     fetchRepairPeople = value => {
         console.log('fetching user', value)
-        this.lastFetchId += 1
-        const fetchId = this.lastFetchId
         this.setState({ data: [], fetching: true })
-        fetch('https://randomuser.me/api/?results=5')
-            .then(response => response.json())
-            .then(body => {
-                if (fetchId !== this.lastFetchId) {
-                    // for fetch callback order
-                    return
+        const model = {
+            name: value,
+            role: 2
+        }
+        axios
+            .get(`${API}/UserListMenu`, { params: model })
+            .then(res => {
+                const Data = res.data.data
+                if (res.data.code === 200) {
+                    if (Data.length > 0) {
+                        this.setState({ repairPeopleList: Data, fetching: false })
+                    } else {
+                        this.setState({
+                            repairPeopleValue: value,
+                            repairPeopleList: [{ id: 0, name: value }],
+                            fetching: false
+                        })
+                    }
+                } else {
+                    message.error(res.data.msg)
                 }
-                const data = body.results.map(user => ({
-                    text: `${user.name.first} ${user.name.last}`,
-                    value: user.login.username
-                }))
-                this.setState({ repairPeopleList: data, fetching: false })
             })
-    }
-
-    onSelectChange = e => {
-        console.log(e)
-        this.setState({
-            sysType: e
-        })
+            .catch(err => {})
     }
 
     repairPeopleChange = value => {
@@ -175,12 +189,123 @@ export default class RepairOrder extends Component {
         })
     }
 
+    // 系统类型 选择select
+    onSelectChange = e => {
+        this.setState({
+            sysType: e
+        })
+    }
+
     // 上传
     handleUpChange = ({ fileList }) => this.setState({ fileList })
 
+    // 工程师select
+    fetchEngineer = value => {
+        this.setState({ data: [], fetching: true })
+        const model = {
+            name: value,
+            role: 1
+        }
+        axios
+            .get(`${API}/UserListMenu`, { params: model })
+            .then(res => {
+                const Data = res.data.data
+                if (res.data.code === 200) {
+                    if (Data.length > 0) {
+                        this.setState({ engineerList: Data, engineerFetching: false })
+                    } else {
+                        this.setState({
+                            engineerValue: value,
+                            engineerList: [{ id: 0, name: value }],
+                            engineerFetching: false
+                        })
+                    }
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+    }
+
+    engineerChange = value => {
+        this.setState({
+            engineerValue: value,
+            engineerList: [],
+            engineerFetching: false
+        })
+    }
+
     // model 确定
     arHandleOk = e => {
+        const { fileList } = this.state
         console.log(e)
+        console.log(fileList)
+        const photo = []
+        for (let i = 0; i < fileList.length; i++) {
+            if (fileList[i].status !== 'done') {
+                message.error('请先等待图片上传完成！')
+                return false
+            } else {
+                photo.push(fileList[i].response.data)
+            }
+        }
+        this.setState({ repairSureLoading: true })
+        const model = {
+            address: e.address,
+            applicationPhoto: photo,
+            content: e.content,
+            contractPhone: e.contractPhone,
+            contractId: e.contractName[0].key, // 用户
+            contractName: e.contractName[0].label,
+            fixId: e.engineerName ? e.engineerName[0].key : '', // 工程师
+            fixName: e.engineerName ? e.engineerName[0].label : '',
+            fixType: e.fixType,
+            softName: e.softName || '',
+            source: 1,
+            type: e.type
+        }
+        axios
+            .post(`${API}/addOrder`, model)
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.onCloseResetModel()
+                    this.getRepairOrderList()
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+        this.setState({ repairSureLoading: false })
+    }
+
+    // 关闭添加维修单 销毁弹窗
+    onCloseResetModel = () => {
+        this.setState({
+            addRepairVisible: false,
+            fileList: []
+        })
+        this.formRef.current.resetFields()
+    }
+
+    // 详情
+    onOrderDetail = id => {
+        this.setState({ repairDetailVisible: true })
+        const model = { id }
+        axios
+            .get(`${API}/orderInfo`, { params: model })
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.setState({
+                        orderDetailInfo: res.data.data,
+                        contractVo: res.data.data.contractVo,
+                        fixVo: res.data.data.fixVo,
+                        userDevice: res.data.data.contractVo.userDevice
+                    })
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
     }
 
     render() {
@@ -193,9 +318,18 @@ export default class RepairOrder extends Component {
             repairPeopleValue,
             repairPeopleList,
             fetching,
+            engineerValue,
+            engineerList,
+            engineerFetching,
             fileList,
             showEngineer,
-            sysType
+            sysType,
+            repairSureLoading,
+            repairDetailVisible,
+            orderDetailInfo,
+            contractVo,
+            fixVo,
+            userDevice
         } = this.state
 
         const columns = [
@@ -256,7 +390,12 @@ export default class RepairOrder extends Component {
             {
                 title: '操作',
                 render: (text, record) => (
-                    <Button type='link' style={{ padding: '0' }}>
+                    <Button
+                        type='link'
+                        style={{ padding: '0' }}
+                        onClick={() => {
+                            this.onOrderDetail(record.id)
+                        }}>
                         详情
                     </Button>
                 )
@@ -318,12 +457,10 @@ export default class RepairOrder extends Component {
                     wrapClassName='add-repair-modal'
                     title='添加维修单'
                     visible={addRepairVisible}
-                    onCancel={() => {
-                        this.setState({ addRepairVisible: false })
-                    }}
+                    onCancel={this.onCloseResetModel}
                     footer={null}>
                     <div>
-                        <Form onFinish={this.arHandleOk}>
+                        <Form ref={this.formRef} onFinish={this.arHandleOk}>
                             <Row span={24}>
                                 <Col span={12}>
                                     <Form.Item
@@ -340,7 +477,7 @@ export default class RepairOrder extends Component {
                                             onSearch={this.fetchRepairPeople}
                                             onChange={this.repairPeopleChange}>
                                             {repairPeopleList.map(d => (
-                                                <Option key={d.value}>{d.text}</Option>
+                                                <Option key={d.id}>{d.name}</Option>
                                             ))}
                                         </Select>
                                     </Form.Item>
@@ -374,7 +511,10 @@ export default class RepairOrder extends Component {
                             </Row>
                             <Row span={24}>
                                 <Col span={12}>
-                                    <Form.Item label='系统类型：' name='fixType'>
+                                    <Form.Item
+                                        label='系统类型：'
+                                        name='fixType'
+                                        rules={[{ required: true, message: '请选择系统类型!' }]}>
                                         <Select placeholder='请选择系统类型' onChange={this.onSelectChange}>
                                             <Option value='0'>系统</Option>
                                             <Option value='1'>硬件</Option>
@@ -383,7 +523,20 @@ export default class RepairOrder extends Component {
                                         </Select>
                                     </Form.Item>
                                 </Col>
-                                {sysType === '2' && (
+                                <Col span={12}>
+                                    <Form.Item
+                                        label='类型：'
+                                        name='type'
+                                        rules={[{ required: true, message: '请选择类型!' }]}>
+                                        <Select placeholder='请选择类型'>
+                                            <Option value='0'>紧急</Option>
+                                            <Option value='1'>一般</Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            {sysType === '2' && (
+                                <Row span={24}>
                                     <Col span={12}>
                                         <Form.Item
                                             label='软件名称：'
@@ -392,20 +545,20 @@ export default class RepairOrder extends Component {
                                             <Input placeholder='请输入软件名称' autoComplete='off' />
                                         </Form.Item>
                                     </Col>
-                                )}
-                            </Row>
-                            {/* <Row span={24}>
-                          <Form.Item label="用户评价：">
-                            <Rate />
-                          </Form.Item>
-                        </Row> */}
+                                </Row>
+                            )}
                             <div style={{ paddingLeft: '20px' }}>
                                 <p>附件：</p>
                                 <div>
                                     <Upload
-                                        action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                                        accept='image/*'
+                                        action={`${API}/upLoadPhoto`}
+                                        method='post'
                                         listType='picture-card'
                                         fileList={fileList}
+                                        onPreview={() => {
+                                            console.log('不做预览！')
+                                        }}
                                         onChange={this.handleUpChange}>
                                         {fileList.length >= 4 ? null : uploadButton}
                                     </Upload>
@@ -421,18 +574,21 @@ export default class RepairOrder extends Component {
                                 {showEngineer && (
                                     <Row style={{ marginTop: '23px' }}>
                                         <Col span={18}>
-                                            <Form.Item label='添加工程师：'>
+                                            <Form.Item
+                                                label='添加工程师：'
+                                                name='engineerName'
+                                                rules={[{ required: true, message: '请输入工程师!' }]}>
                                                 <Select
                                                     mode='multiple'
                                                     placeholder=''
                                                     labelInValue
-                                                    value={repairPeopleValue}
-                                                    notFoundContent={fetching ? <Spin size='small' /> : null}
+                                                    value={engineerValue}
+                                                    notFoundContent={engineerFetching ? <Spin size='small' /> : null}
                                                     filterOption={false}
-                                                    onSearch={this.fetchRepairPeople}
-                                                    onChange={this.repairPeopleChange}>
-                                                    {repairPeopleList.map(d => (
-                                                        <Option key={d.value}>{d.text}</Option>
+                                                    onSearch={this.fetchEngineer}
+                                                    onChange={this.engineerChange}>
+                                                    {engineerList.map(d => (
+                                                        <Option key={d.id}>{d.name}</Option>
                                                     ))}
                                                 </Select>
                                             </Form.Item>
@@ -445,11 +601,167 @@ export default class RepairOrder extends Component {
                                     type='primary'
                                     htmlType='submit'
                                     className='add-repair-sure'
-                                    loading={this.state.loading}>
+                                    disabled={repairSureLoading}
+                                    loading={repairSureLoading}>
                                     确定
                                 </Button>
                             </Form.Item>
                         </Form>
+                    </div>
+                </Modal>
+                {/* 详情 */}
+                <Modal
+                    wrapClassName='repair-detail-modal'
+                    title='详情'
+                    visible={repairDetailVisible}
+                    onCancel={() => {
+                        this.setState({ repairDetailVisible: false })
+                    }}
+                    footer={null}>
+                    <div>
+                        <Row span={24}>
+                            <Col span={12}>
+                                <span>报修人：</span>
+                                <span>{contractVo.contractName}</span>
+                            </Col>
+                            <Col span={12}>
+                                <span>联系电话：</span>
+                                <span>{contractVo.contractPhone}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={12}>
+                                <span>报修内容：</span>
+                                <span>{contractVo.content}</span>
+                            </Col>
+                            <Col span={12}>
+                                <span>维修地址：</span>
+                                <span>{contractVo.address}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={12}>
+                                <span>系统类型：</span>
+                                <span>
+                                    {contractVo.fixType === 0
+                                        ? '系统'
+                                        : contractVo.fixType === 1
+                                        ? '硬件'
+                                        : contractVo.fixType === 2
+                                        ? '软件'
+                                        : contractVo.fixType === 3
+                                        ? '其他'
+                                        : ''}
+                                </span>
+                            </Col>
+                            <Col span={12}>
+                                <span>类型：</span>
+                                <span>{contractVo.typeStr}</span>
+                            </Col>
+                        </Row>
+                        {contractVo.fixType === 2 && (
+                            <Row span={24}>
+                                <Col span={12}>
+                                    <span>软件名称：</span>
+                                    <span>{contractVo.softName}</span>
+                                </Col>
+                            </Row>
+                        )}
+                        <Row span={24}>
+                            <Col span={12}>
+                                <span>用户评价：</span>
+                                <Rate />
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <span>附件：</span>
+                            <div className='img-box'>
+                                {/* {item.applicationPhoto.length > 0 ? (
+                                <div>
+                                    {item.applicationPhoto.map(item2 => {
+                                        return <img src={item2} alt='' />
+                                    })}
+                                </div>
+                            ) : (
+                                <span>无</span>
+                            )} */}
+                            </div>
+                        </Row>
+                        {fixVo !== null && (
+                            <div>
+                                <Divider />
+                                <Row span={24}>
+                                    <Col span={12}>
+                                        <span>工程师：</span>
+                                        <span>{fixVo.fixName}</span>
+                                    </Col>
+                                    <Col span={12}>
+                                        <span>订单状态：</span>
+                                        <span>
+                                            {orderDetailInfo.orderStatus === 1
+                                                ? '已接单'
+                                                : orderDetailInfo.orderStatus === 0
+                                                ? '未接单'
+                                                : orderDetailInfo.orderStatus === 2
+                                                ? '已完成'
+                                                : orderDetailInfo.orderStatus === 3
+                                                ? '已取消'
+                                                : ''}
+                                        </span>
+                                    </Col>
+                                </Row>
+                                <Row span={24}>
+                                    <span>附件：</span>
+                                    <div className='img-box'>
+                                        {/* {item.applicationPhoto.length > 0 ? (
+                                            <div>
+                                                {item.applicationPhoto.map(item2 => {
+                                                    return <img src={item2} alt='' />
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <span>无</span>
+                                        )} */}
+                                    </div>
+                                </Row>
+                            </div>
+                        )}
+                        {userDevice !== null && (
+                            <div>
+                                <Divider />
+                                <p>设备详情:</p>
+                                <Row span={24}>
+                                    <Col span={12}>
+                                        <span>CPU：</span>
+                                        <span>{userDevice.cpu}</span>
+                                    </Col>
+                                    <Col span={12}>
+                                        <span>硬盘：</span>
+                                        <span>{userDevice.system}</span>
+                                    </Col>
+                                </Row>
+                                <Row span={24}>
+                                    <Col span={12}>
+                                        <span>打印机：</span>
+                                        <span>{userDevice.printer}</span>
+                                    </Col>
+                                    <Col span={12}>
+                                        <span>内存：</span>
+                                        <span>{userDevice.hardDisk}</span>
+                                    </Col>
+                                </Row>
+                                <Row span={24}>
+                                    <Col span={12}>
+                                        <span>显卡：</span>
+                                        <span>{userDevice.videoCard}</span>
+                                    </Col>
+                                    <Col span={12}>
+                                        <span>主板：</span>
+                                        <span>{userDevice.mainBoard}</span>
+                                    </Col>
+                                </Row>
+                            </div>
+                        )}
                     </div>
                 </Modal>
             </Layout>

@@ -17,13 +17,16 @@ export default class Report extends Component {
         super(props)
         this.state = {
             dateTime: ['', ''],
+            orderStatus: '',
             fetching: false,
             engineerList: []
         }
         this.fetchEngineer = debounce(this.fetchEngineer, 800)
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        this.getFixOrderReport()
+    }
 
     // 工程师select
     fetchEngineer = value => {
@@ -75,11 +78,13 @@ export default class Report extends Component {
     }
 
     // 维修单统计报表
-    onDeleteCases = () => {
-        const { dateTime } = this.state
+    getFixOrderReport = () => {
+        const { dateTime, orderStatus } = this.state
         const model = {
             start: dateTime[0],
-            end: dateTime[1]
+            end: dateTime[1],
+            orderStatus,
+            fixId: ''
         }
         axios
             .get(`${API}/fixOrderCount`, { params: model })

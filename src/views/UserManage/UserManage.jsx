@@ -20,8 +20,7 @@ export default class UserManage extends Component {
             deviceSureLoading: false,
             repairHistoryVisible: false,
             deviceManageVisible: false,
-            historyList: [], // 报修历史数据
-            deviceInfo: {} // 设备详情
+            historyList: [] // 报修历史数据
         }
     }
 
@@ -136,10 +135,16 @@ export default class UserManage extends Component {
         axios
             .get(`${API}/deviceInfo`, { params: model })
             .then(res => {
+                const Data = res.data.data
                 if (res.data.code === 200) {
-                    this.formDeviceRef.setFieldsValue(res.data.data)
-                    this.setState({
-                        deviceInfo: res.data.data
+                    // 回显数据
+                    this.formDeviceRef.current.setFieldsValue({
+                        cpu: Data.cpu,
+                        hardDisk: Data.hardDisk,
+                        system: Data.system,
+                        videoCard: Data.videoCard,
+                        printer: Data.printer,
+                        mainBoard: Data.mainBoard
                     })
                 } else {
                     message.error(res.data.msg)
@@ -158,7 +163,7 @@ export default class UserManage extends Component {
         console.log(e)
         const model = {
             ...e,
-            userId: deviceRowData.id
+            uid: deviceRowData.id
         }
         this.setState({ deviceSureLoading: true })
         axios

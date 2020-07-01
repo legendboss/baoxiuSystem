@@ -26,5 +26,13 @@
         .ant-radio-button-wrapper {
             width: auto;
         }
+
+        .ant-radio-group {
+            label {
+                text-align: left;
+                display: inline-block;
+                margin-right: 0px;
+            }
+        }
     }
 }
