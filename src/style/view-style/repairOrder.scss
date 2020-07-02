@@ -49,6 +49,20 @@
         width: 600px !important;
     }
 
+    .rd-box {
+        max-height: 497px;
+        overflow-y: scroll;
+
+        .img-box {
+            img {
+                width: 100px;
+                height: 100px;
+                object-fit: contain;
+                margin: 0 24px 24px 0;
+            }
+        }
+    }
+
     .ant-col {
         margin-bottom: 20px;
         color: rgba(0, 0, 0, 0.85);

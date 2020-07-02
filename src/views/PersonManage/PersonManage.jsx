@@ -205,8 +205,9 @@ export default class PersonManage extends Component {
                             showQuickJumper: true,
                             current: startPage,
                             total: total,
-                            pageSize: [10],
-                            onChange: page => this.handleTableChange(page)
+                            showTotal: total => `共 ${total} 条`,
+                            pageSizeOptions: [10, 20],
+                            onChange: (page, pageSize) => this.handleTableChange(page, pageSize)
                         }}
                     />
                 </div>

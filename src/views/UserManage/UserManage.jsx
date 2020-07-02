@@ -264,8 +264,9 @@ export default class UserManage extends Component {
                             showQuickJumper: true,
                             current: startPage,
                             total: total,
-                            pageSize: [10],
-                            onChange: page => this.handleTableChange(page)
+                            showTotal: total => `共 ${total} 条`,
+                            pageSizeOptions: [10, 20],
+                            onChange: (page, pageSize) => this.handleTableChange(page, pageSize)
                         }}
                     />
                 </div>
@@ -334,8 +335,8 @@ export default class UserManage extends Component {
                                         <div className='img-box'>
                                             {item.applicationPhoto.length > 0 ? (
                                                 <div>
-                                                    {item.applicationPhoto.map(item2 => {
-                                                        return <img src={item2} alt='' />
+                                                    {item.applicationPhoto.map((item2, index2) => {
+                                                        return <img key={index2} src={item2} alt='' />
                                                     })}
                                                 </div>
                                             ) : (

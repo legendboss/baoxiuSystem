@@ -53,8 +53,8 @@ export default class RepairOrder extends Component {
             repairSureLoading: false,
             repairDetailVisible: false, // 详情model
             orderDetailInfo: {},
-            contractVo: {},
-            fixVo: {},
+            contractVo: { photo: [] },
+            fixVo: { photos: [] },
             userDevice: {}
         }
         this.fetchRepairPeople = debounce(this.fetchRepairPeople, 800)
@@ -448,8 +448,9 @@ export default class RepairOrder extends Component {
                             showQuickJumper: true,
                             current: startPage,
                             total: total,
-                            pageSize: [10],
-                            onChange: page => this.handleTableChange(page)
+                            showTotal: total => `共 ${total} 条`,
+                            pageSizeOptions: [10, 20],
+                            onChange: (page, pageSize) => this.handleTableChange(page, pageSize)
                         }}
                     />
                 </div>
@@ -618,7 +619,7 @@ export default class RepairOrder extends Component {
                         this.setState({ repairDetailVisible: false })
                     }}
                     footer={null}>
-                    <div>
+                    <div className='rd-box'>
                         <Row span={24}>
                             <Col span={12}>
                                 <span>报修人：</span>
@@ -676,15 +677,15 @@ export default class RepairOrder extends Component {
                         <Row span={24}>
                             <span>附件：</span>
                             <div className='img-box'>
-                                {/* {item.applicationPhoto.length > 0 ? (
-                                <div>
-                                    {item.applicationPhoto.map(item2 => {
-                                        return <img src={item2} alt='' />
-                                    })}
-                                </div>
-                            ) : (
-                                <span>无</span>
-                            )} */}
+                                {contractVo.photo.length > 0 ? (
+                                    <div>
+                                        {contractVo.photo.map((item, index) => {
+                                            return <img key={index} src={item} alt='' />
+                                        })}
+                                    </div>
+                                ) : (
+                                    <span>无</span>
+                                )}
                             </div>
                         </Row>
                         {fixVo !== null && (
@@ -713,15 +714,15 @@ export default class RepairOrder extends Component {
                                 <Row span={24}>
                                     <span>附件：</span>
                                     <div className='img-box'>
-                                        {/* {item.applicationPhoto.length > 0 ? (
+                                        {fixVo.photos.length > 0 ? (
                                             <div>
-                                                {item.applicationPhoto.map(item2 => {
-                                                    return <img src={item2} alt='' />
+                                                {fixVo.photos.map((item2, index2) => {
+                                                    return <img key={index2} src={item2} alt='' />
                                                 })}
                                             </div>
                                         ) : (
                                             <span>无</span>
-                                        )} */}
+                                        )}
                                     </div>
                                 </Row>
                             </div>
