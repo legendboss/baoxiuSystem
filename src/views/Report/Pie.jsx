@@ -13,17 +13,12 @@ class Pie extends Component {
                 trigger: 'item',
                 formatter: '{a} <br/>{b} : {c} ({d}%)'
             },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-            },
             series: [
                 {
                     name: '访问来源',
                     type: 'pie',
                     radius: '55%',
-                    center: ['50%', '60%'],
+                    center: ['50%', '50%'],
                     data: [
                         { value: 335, name: '直接访问' },
                         { value: 310, name: '邮件营销' },
@@ -46,7 +41,7 @@ class Pie extends Component {
         })
     }
     render() {
-        return <div id='pie' style={{ height: 300 }}></div>
+        return <div id='pie' style={{ width: '600px', height: '500px', margin: '100px auto' }}></div>
     }
 }
 
