@@ -6,7 +6,27 @@ import 'echarts/lib/component/title'
 import 'echarts/lib/component/legend'
 
 class Bar extends Component {
-    componentDidMount() {
+    constructor(props) {
+        super(props)
+        this.state = {
+            barData: []
+        }
+    }
+    // componentWillReceiveProps(){
+    //     this.setState({
+    //         barData: this.props.barData,
+    //         echartsName: this.props.name
+    //     }, ()=> {
+    //         this.initEcharts()
+    //     })
+    // }
+
+    componentDidUpdate() {
+        this.initEcharts(this.props)
+    }
+
+    initEcharts = props => {
+        const { barData, name } = props
         let myChart = echarts.init(document.getElementById('bar'))
         myChart.setOption({
             tooltip: {
@@ -25,7 +45,7 @@ class Bar extends Component {
             xAxis: [
                 {
                     type: 'category',
-                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                    data: barData[1]
                 }
             ],
             yAxis: [
@@ -35,10 +55,10 @@ class Bar extends Component {
             ],
             series: [
                 {
-                    name: '直接访问',
+                    name: name,
                     type: 'bar',
                     barWidth: 65,
-                    data: [320, 332, 301, 334, 390, 330, 320],
+                    data: barData[0],
                     itemStyle: {
                         normal: {
                             color: new echarts.graphic.LinearGradient(

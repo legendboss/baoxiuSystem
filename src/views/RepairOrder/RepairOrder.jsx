@@ -155,7 +155,7 @@ export default class RepairOrder extends Component {
     // 报修人select
     fetchRepairPeople = value => {
         console.log('fetching user', value)
-        this.setState({ data: [], fetching: true })
+        this.setState({ repairPeopleList: [], fetching: true })
         const model = {
             name: value,
             role: 2
@@ -201,7 +201,7 @@ export default class RepairOrder extends Component {
 
     // 工程师select
     fetchEngineer = value => {
-        this.setState({ data: [], fetching: true })
+        this.setState({ engineerList: [], engineerFetching: true })
         const model = {
             name: value,
             role: 1

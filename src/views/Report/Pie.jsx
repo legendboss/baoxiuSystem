@@ -6,26 +6,33 @@ import 'echarts/lib/component/title'
 import 'echarts/lib/component/legend'
 
 class Pie extends Component {
-    componentDidMount() {
+    constructor(props) {
+        super(props)
+        this.state = {
+            pieData: []
+        }
+    }
+
+    componentDidUpdate() {
+        this.initEcharts(this.props)
+    }
+
+    initEcharts = props => {
+        const { pieData, name } = props
         let myChart = echarts.init(document.getElementById('pie'))
         myChart.setOption({
+            color: ['#1074FF', '#16E8FF', '#008D89', '#006D94'],
             tooltip: {
                 trigger: 'item',
                 formatter: '{a} <br/>{b} : {c} ({d}%)'
             },
             series: [
                 {
-                    name: '访问来源',
+                    name: name,
                     type: 'pie',
                     radius: '55%',
                     center: ['50%', '50%'],
-                    data: [
-                        { value: 335, name: '直接访问' },
-                        { value: 310, name: '邮件营销' },
-                        { value: 234, name: '联盟广告' },
-                        { value: 135, name: '视频广告' },
-                        { value: 1548, name: '搜索引擎' }
-                    ],
+                    data: pieData,
                     itemStyle: {
                         emphasis: {
                             shadowBlur: 10,
