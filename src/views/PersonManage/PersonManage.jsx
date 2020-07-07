@@ -47,10 +47,11 @@ export default class PersonManage extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ listLoading: false })
             })
-            .catch(err => {})
-
-        this.setState({ listLoading: false })
+            .catch(err => {
+                this.setState({ listLoading: false })
+            })
     }
 
     // 人员管理列表分页
@@ -106,9 +107,11 @@ export default class PersonManage extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ sureLoading: false })
             })
-            .catch(err => {})
-        this.setState({ sureLoading: false })
+            .catch(err => {
+                this.setState({ sureLoading: false })
+            })
     }
 
     // 关闭销毁弹窗

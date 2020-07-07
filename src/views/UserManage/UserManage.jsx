@@ -52,10 +52,11 @@ export default class UserManage extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ listLoading: false })
             })
-            .catch(err => {})
-
-        this.setState({ listLoading: false })
+            .catch(err => {
+                this.setState({ listLoading: false })
+            })
     }
 
     // 用户管理列表分页
@@ -96,9 +97,11 @@ export default class UserManage extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ addUserSureLoading: false })
             })
-            .catch(err => {})
-        this.setState({ addUserSureLoading: false })
+            .catch(err => {
+                this.setState({ addUserSureLoading: false })
+            })
     }
 
     // 关闭销毁添加用户弹窗
@@ -175,9 +178,11 @@ export default class UserManage extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ deviceSureLoading: false })
             })
-            .catch(err => {})
-        this.setState({ deviceSureLoading: false })
+            .catch(err => {
+                this.setState({ deviceSureLoading: false })
+            })
     }
 
     // 关闭销毁设备管理弹窗

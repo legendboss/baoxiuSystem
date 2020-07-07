@@ -74,10 +74,11 @@ export default class KnowledgeBase extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ listLoading: false })
             })
-            .catch(err => {})
-
-        this.setState({ listLoading: false })
+            .catch(err => {
+                this.setState({ listLoading: false })
+            })
     }
 
     // 知识库列表分页
@@ -129,9 +130,11 @@ export default class KnowledgeBase extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ addCasesSureLoading: false })
             })
-            .catch(err => {})
-        this.setState({ addCasesSureLoading: false })
+            .catch(err => {
+                this.setState({ addCasesSureLoading: false })
+            })
     }
 
     // 关闭销毁弹窗

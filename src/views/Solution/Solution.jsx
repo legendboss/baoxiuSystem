@@ -46,10 +46,11 @@ export default class Solution extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ listLoading: false })
             })
-            .catch(err => {})
-
-        this.setState({ listLoading: false })
+            .catch(err => {
+                this.setState({ listLoading: false })
+            })
     }
 
     // 解决方案列表分页
@@ -99,9 +100,11 @@ export default class Solution extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ solutionSureLoading: false })
             })
-            .catch(err => {})
-        this.setState({ solutionSureLoading: false })
+            .catch(err => {
+                this.setState({ solutionSureLoading: false })
+            })
     }
 
     // 变更解决方案状态

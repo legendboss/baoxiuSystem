@@ -131,10 +131,11 @@ export default class RepairOrder extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ listLoading: false })
             })
-            .catch(err => {})
-
-        this.setState({ listLoading: false })
+            .catch(err => {
+                this.setState({ listLoading: false })
+            })
     }
 
     // 维修单列表分页
@@ -255,8 +256,8 @@ export default class RepairOrder extends Component {
             applicationPhoto: photo,
             content: e.content,
             contractPhone: e.contractPhone,
-            contractId: e.contractName[0].key, // 用户
-            contractName: e.contractName[0].label,
+            contractId: e.contractName ? e.contractName[0].key : '', // 用户
+            contractName: e.contractName ? e.contractName[0].label : '',
             fixId: e.engineerName ? e.engineerName[0].key : '', // 工程师
             fixName: e.engineerName ? e.engineerName[0].label : '',
             fixType: e.fixType,
@@ -273,9 +274,11 @@ export default class RepairOrder extends Component {
                 } else {
                     message.error(res.data.msg)
                 }
+                this.setState({ repairSureLoading: false })
             })
-            .catch(err => {})
-        this.setState({ repairSureLoading: false })
+            .catch(err => {
+                this.setState({ repairSureLoading: false })
+            })
     }
 
     // 关闭添加维修单 销毁弹窗
@@ -668,12 +671,14 @@ export default class RepairOrder extends Component {
                                 </Col>
                             </Row>
                         )}
-                        <Row span={24}>
-                            <Col span={12}>
-                                <span>用户评价：</span>
-                                <Rate />
-                            </Col>
-                        </Row>
+                        {orderDetailInfo.orderStatus === 2 && (
+                            <Row span={24}>
+                                <Col span={12}>
+                                    <span>用户评价：</span>
+                                    <Rate defaultValue={contractVo.score} />
+                                </Col>
+                            </Row>
+                        )}
                         <Row span={24}>
                             <span>附件：</span>
                             <div className='img-box'>

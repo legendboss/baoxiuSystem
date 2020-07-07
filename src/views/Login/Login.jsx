@@ -3,7 +3,7 @@ import { Layout, Input, Form, Button, message } from 'antd'
 // import { withRouter } from 'react-router-dom'
 import axios from '@/api'
 import { API } from '@/api/config'
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import '@/style/view-style/login.scss'
 
 class Login extends Component {
@@ -29,10 +29,12 @@ class Login extends Component {
                     // 这里处理一些错误信息
                     message.error(res.data.msg)
                 }
+                this.setState({ loading: false })
             })
-            .catch(err => {})
-        
-            this.setState({ loading: false })
+            .catch(err => {
+                this.setState({ loading: false })
+            })
+
         // // 这里可以做权限校验 模拟接口返回用户权限标识
         // switch (e.account) {
         //     case 'admin':
@@ -41,14 +43,11 @@ class Login extends Component {
         //     default:
         //         e.auth = 1
         // }
-        
+
         values.auth = 1
-      
     }
 
-    componentDidMount() {
-        
-    }
+    componentDidMount() {}
 
     render() {
         const { loading } = this.state
@@ -57,25 +56,19 @@ class Login extends Component {
                 <div className='model'>
                     <div className='login-form'>
                         <Form onFinish={this.onFinish}>
-                            <Form.Item
-                                name="account"
-                                rules= {[{ required: true, message: '请输入账户名!' }]}
-                            >
+                            <Form.Item name='account' rules={[{ required: true, message: '请输入账户名!' }]}>
                                 <Input
-                                    prefix={<UserOutlined className="site-form-item-icon" />}
+                                    prefix={<UserOutlined className='site-form-item-icon' />}
                                     placeholder='账户'
-                                    autoComplete="off"
+                                    autoComplete='off'
                                 />
                             </Form.Item>
-                            <Form.Item
-                                name="password"
-                                rules= {[{ required: true, message: '请输入密码！' }]}
-                            >
+                            <Form.Item name='password' rules={[{ required: true, message: '请输入密码！' }]}>
                                 <Input
-                                    prefix={<LockOutlined className="site-form-item-icon" />}
+                                    prefix={<LockOutlined className='site-form-item-icon' />}
                                     type='password'
                                     placeholder='密码'
-                                    autoComplete="off"
+                                    autoComplete='off'
                                 />
                             </Form.Item>
                             <Form.Item>
