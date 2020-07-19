@@ -28,6 +28,15 @@ import moment from 'moment'
 const { Option } = Select
 const { RangePicker } = DatePicker
 
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = error => reject(error)
+    })
+}
+
 export default class RepairOrder extends Component {
     constructor(props) {
         super(props)
@@ -55,7 +64,9 @@ export default class RepairOrder extends Component {
             orderDetailInfo: {},
             contractVo: { photo: [] },
             fixVo: { photos: [] },
-            userDevice: {}
+            userDevice: {},
+            previewVisible: false,
+            previewImage: ''
         }
         this.fetchRepairPeople = debounce(this.fetchRepairPeople, 800)
     }
@@ -311,6 +322,27 @@ export default class RepairOrder extends Component {
             .catch(err => {})
     }
 
+    // 图片预览
+    handlePreview = async file => {
+        console.log(file)
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj)
+        }
+
+        this.setState({
+            previewImage: file.url || file.preview,
+            previewVisible: true
+        })
+    }
+
+    // 普通图片预览
+    onPreviewImage = url => {
+        this.setState({
+            previewImage: url,
+            previewVisible: true
+        })
+    }
+
     render() {
         const {
             startPage,
@@ -332,7 +364,9 @@ export default class RepairOrder extends Component {
             orderDetailInfo,
             contractVo,
             fixVo,
-            userDevice
+            userDevice,
+            previewVisible,
+            previewImage
         } = this.state
 
         const columns = [
@@ -560,9 +594,7 @@ export default class RepairOrder extends Component {
                                         method='post'
                                         listType='picture-card'
                                         fileList={fileList}
-                                        onPreview={() => {
-                                            console.log('不做预览！')
-                                        }}
+                                        onPreview={this.handlePreview}
                                         onChange={this.handleUpChange}>
                                         {fileList.length >= 4 ? null : uploadButton}
                                     </Upload>
@@ -685,7 +717,16 @@ export default class RepairOrder extends Component {
                                 {contractVo.photo.length > 0 ? (
                                     <div>
                                         {contractVo.photo.map((item, index) => {
-                                            return <img key={index} src={item} alt='' />
+                                            return (
+                                                <img
+                                                    key={index}
+                                                    src={item}
+                                                    alt=''
+                                                    onClick={() => {
+                                                        this.onPreviewImage(item)
+                                                    }}
+                                                />
+                                            )
                                         })}
                                     </div>
                                 ) : (
@@ -722,7 +763,16 @@ export default class RepairOrder extends Component {
                                         {fixVo.photos.length > 0 ? (
                                             <div>
                                                 {fixVo.photos.map((item2, index2) => {
-                                                    return <img key={index2} src={item2} alt='' />
+                                                    return (
+                                                        <img
+                                                            key={index2}
+                                                            src={item2}
+                                                            alt=''
+                                                            onClick={() => {
+                                                                this.onPreviewImage(item2)
+                                                            }}
+                                                        />
+                                                    )
                                                 })}
                                             </div>
                                         ) : (
@@ -769,6 +819,18 @@ export default class RepairOrder extends Component {
                             </div>
                         )}
                     </div>
+                </Modal>
+                {/* 普通图片预览 */}
+                <Modal
+                    width={800}
+                    visible={previewVisible}
+                    title='预览'
+                    footer={null}
+                    className='preview-image-modal'
+                    onCancel={() => {
+                        this.setState({ previewVisible: false })
+                    }}>
+                    <img alt='example' className='preview-image' src={previewImage} />
                 </Modal>
             </Layout>
         )

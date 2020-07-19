@@ -10,15 +10,44 @@ import aside4 from '@/assets/icon/aside4.svg'
 import aside5 from '@/assets/icon/aside5.svg'
 import aside6 from '@/assets/icon/aside6.svg'
 
+const wsNewOrder = new WebSocket(`ws://qikeqike.qicp.vip/newOrder`)
+
 class Index extends Component {
+    state = {
+        newOrderNum: 0
+    }
+
+    componentDidMount() {
+        wsNewOrder.onopen = function(e) {
+            console.log('连接上 wsNewOrder 服务端了')
+            wsNewOrder.send({})
+        }
+        wsNewOrder.onmessage = msg => {
+            console.log('接收服务端发过来的消息wsNewOrder: ', msg)
+            document.getElementById('bgm').play()
+            this.setState({
+                newOrderNum: msg.data
+            })
+        }
+        wsNewOrder.onclose = function(e) {
+            console.log('wsNewOrder 连接关闭了')
+            console.log(e)
+        }
+    }
+
     fullToggle = () => {
         if (screenfull.isEnabled) {
             screenfull.request(document.getElementById('bar'))
         }
     }
+
     render() {
+        const { newOrderNum } = this.state
         return (
             <Layout className='index animated fadeIn'>
+                <audio id='bgm'>
+                    <source src='http://downsc.chinaz.net/Files/DownLoad/sound1/201706/8855.mp3' type='audio/mpeg' />
+                </audio>
                 <Row gutter={8} className='index-box'>
                     <Col>
                         <div className='items'>
@@ -26,7 +55,7 @@ class Index extends Component {
                                 <img src={aside1} alt='' />
                             </a>
                             <p>维修单</p>
-                            <span className='tip'>2</span>
+                            <span className='tip'>{newOrderNum}</span>
                         </div>
                     </Col>
                     <Col>

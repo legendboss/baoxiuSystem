@@ -20,7 +20,9 @@ export default class UserManage extends Component {
             deviceSureLoading: false,
             repairHistoryVisible: false,
             deviceManageVisible: false,
-            historyList: [] // 报修历史数据
+            historyList: [], // 报修历史数据
+            previewVisible: false,
+            previewImage: ''
         }
     }
 
@@ -193,6 +195,14 @@ export default class UserManage extends Component {
         this.formDeviceRef.current.resetFields()
     }
 
+    // 普通图片预览
+    onPreviewImage = url => {
+        this.setState({
+            previewImage: url,
+            previewVisible: true
+        })
+    }
+
     render() {
         const {
             startPage,
@@ -204,7 +214,9 @@ export default class UserManage extends Component {
             repairHistoryVisible,
             deviceManageVisible,
             historyList,
-            deviceSureLoading
+            deviceSureLoading,
+            previewVisible,
+            previewImage
         } = this.state
 
         const columns = [
@@ -341,7 +353,16 @@ export default class UserManage extends Component {
                                             {item.applicationPhoto.length > 0 ? (
                                                 <div>
                                                     {item.applicationPhoto.map((item2, index2) => {
-                                                        return <img key={index2} src={item2} alt='' />
+                                                        return (
+                                                            <img
+                                                                key={index2}
+                                                                src={item2}
+                                                                alt=''
+                                                                onClick={() => {
+                                                                    this.onPreviewImage(item2)
+                                                                }}
+                                                            />
+                                                        )
                                                     })}
                                                 </div>
                                             ) : (
@@ -417,6 +438,18 @@ export default class UserManage extends Component {
                             </Form.Item>
                         </Form>
                     </div>
+                </Modal>
+                {/* 普通图片预览 */}
+                <Modal
+                    width={800}
+                    visible={previewVisible}
+                    title='预览'
+                    footer={null}
+                    className='preview-image-modal'
+                    onCancel={() => {
+                        this.setState({ previewVisible: false })
+                    }}>
+                    <img alt='example' className='preview-image' src={previewImage} />
                 </Modal>
             </Layout>
         )

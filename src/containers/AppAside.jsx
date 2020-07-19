@@ -10,7 +10,7 @@ const AppAside = props => {
     return (
         <Sider className='aside my-aside' collapsed={menuToggle}>
             <div className='logo'>
-                logo公司名称
+                <a href='#/index'>logo公司名称</a>
             </div>
             <CustomMenu menu={menu}></CustomMenu>
         </Sider>

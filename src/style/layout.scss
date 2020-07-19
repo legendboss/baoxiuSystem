@@ -8,10 +8,10 @@
         left: 0;
         height: 100vh;
         overflow-y: auto;
-        background-image: linear-gradient(27deg, #0B74FF 5%, #3271FF 100%);
+        background-image: linear-gradient(27deg, #0b74ff 5%, #3271ff 100%);
         .logo {
             width: 200px;
-            background: rgba(0,0,0,0.30);
+            background: rgba(0, 0, 0, 0.3);
             height: 60px;
             line-height: 60px;
             box-sizing: border-box;
@@ -20,6 +20,9 @@
             font-size: 16px;
             img {
                 height: 100%;
+            }
+            a {
+                color: #fff;
             }
         }
 
@@ -30,7 +33,7 @@
                 margin: 0;
                 padding: 0 25px;
 
-                >a {
+                > a {
                     font-size: 16px;
                     line-height: 60px;
 
@@ -72,7 +75,6 @@
                 height: 23px;
                 line-height: 23px;
                 background-color: #eef0f3;
-
             }
             .ant-avatar-icon {
                 font-size: 18px;
@@ -84,7 +86,7 @@
 
             .user-name {
                 font-size: 14px;
-                color: rgba(0,0,0,0.65);
+                color: rgba(0, 0, 0, 0.65);
                 text-align: right;
                 margin-left: 10px;
             }
@@ -107,11 +109,11 @@
         .index-header {
             color: #fff;
             margin: 0px !important;
-    
+
             .ant-col-6 {
                 padding: 0 !important;
             }
-    
+
             .base-style {
                 height: 106px;
                 box-shadow: none;
@@ -119,32 +121,32 @@
                 padding: 20px 0 20px 20px;
                 position: relative;
                 margin-bottom: 25px;
-    
-                p:nth-of-type(1){
+
+                p:nth-of-type(1) {
                     font-size: 16px;
-                    color: rgba(0,0,0,0.45);
+                    color: rgba(0, 0, 0, 0.45);
                     text-align: center;
                     line-height: 22px;
                     margin-bottom: 10px;
                 }
-                p:nth-of-type(2){
+                p:nth-of-type(2) {
                     font-size: 28px;
-                    color: #1973FF;
+                    color: #1973ff;
                     text-align: center;
                     line-height: 32px;
                     font-weight: 500;
                 }
             }
-    
+
             .line {
                 width: 1px;
                 height: 58px;
-                background: #E8E8E8;
+                background: #e8e8e8;
                 position: absolute;
                 right: 0;
                 top: 26px;
             }
-    
+
             .icon-style {
                 color: #fbfbf4b3;
                 font-size: 6rem;
@@ -152,7 +154,6 @@
             }
         }
     }
-
 }
 
 .change-password-modal {

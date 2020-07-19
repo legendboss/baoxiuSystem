@@ -86,3 +86,13 @@
         line-height: 22px;
     }
 }
+.preview-image-modal {
+    width: 800px;
+
+    .preview-image {
+        width: 700px;
+        max-height: 700px;
+        display: block;
+        margin: 0 auto;
+    }
+}
