@@ -194,6 +194,15 @@ export default class RepairOrder extends Component {
     }
 
     repairPeopleChange = value => {
+        const { repairPeopleList } = this.state
+        if (value[0] && value[0].key !== '0') {
+            // 回显数据
+            const showData = repairPeopleList.filter(item => item.id.toString() === value[0].key)
+            this.formRef.current.setFieldsValue({
+                contractPhone: showData[0].phone,
+                address: showData[0].address
+            })
+        }
         this.setState({
             repairPeopleValue: value,
             repairPeopleList: [],
@@ -273,7 +282,7 @@ export default class RepairOrder extends Component {
             fixName: e.engineerName ? e.engineerName[0].label : '',
             fixType: e.fixType,
             softName: e.softName || '',
-            source: 1,
+            source: 0,
             type: e.type
         }
         axios

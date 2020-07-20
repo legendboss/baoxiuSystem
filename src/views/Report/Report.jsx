@@ -145,7 +145,7 @@ export default class Report extends Component {
             start: dateTime[0],
             end: dateTime[1],
             orderStatus,
-            fixId: engineerValue.length !== 0 ? engineerValue.key : '0' // 工程师
+            fixId: engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
         }
         axios
             .get(`${API}/fixOrderCount`, { params: model })
@@ -175,7 +175,7 @@ export default class Report extends Component {
         const model = {
             start: dateTime[0],
             end: dateTime[1],
-            fixId: engineerValue.length !== 0 ? engineerValue.key : '0' // 工程师
+            fixId: engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
         }
         axios
             .get(`${API}/fromCount`, { params: model })
@@ -207,7 +207,7 @@ export default class Report extends Component {
         const model = {
             start: dateTime[0],
             end: dateTime[1],
-            fixId: engineerValue.length !== 0 ? engineerValue.key : '0' // 工程师
+            fixId: engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
         }
         axios
             .get(`${API}/avgResponseTime`, { params: model })
@@ -237,7 +237,7 @@ export default class Report extends Component {
         const model = {
             start: dateTime[0],
             end: dateTime[1],
-            fixId: engineerValue.length !== 0 ? engineerValue.key : '0' // 工程师
+            fixId: engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
         }
         axios
             .get(`${API}/avgFinishTime`, { params: model })
@@ -268,7 +268,7 @@ export default class Report extends Component {
         const model = {
             start: dateTime[0],
             end: dateTime[1],
-            fixId: engineerValue.length !== 0 ? engineerValue.key : '0' // 工程师
+            fixId: engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
         }
         axios
             .get(`${API}/scoreCount`, { params: model })

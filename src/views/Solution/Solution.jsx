@@ -119,6 +119,7 @@ export default class Solution extends Component {
             .then(res => {
                 if (res.data.code === 200) {
                     this.onCloseResetModel()
+                    this.getFixList()
                 } else {
                     message.error(res.data.msg)
                 }
@@ -158,8 +159,8 @@ export default class Solution extends Component {
         const columns = [
             {
                 title: '工程师姓名',
-                dataIndex: 'name',
-                key: 'name'
+                dataIndex: 'fixName',
+                key: 'fixName'
             },
             {
                 title: '类型',

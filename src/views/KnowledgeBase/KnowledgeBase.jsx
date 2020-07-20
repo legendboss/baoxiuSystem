@@ -55,9 +55,10 @@ export default class KnowledgeBase extends Component {
     // 获取知识库列表
     getKnowledgeList = () => {
         const { type, keyWord, startPage, pageSize } = this.state
+        console.log(keyWord.toString())
         const model = {
             type,
-            keyWord,
+            keyWord: keyWord.toString(),
             startPage,
             pageSize
         }
