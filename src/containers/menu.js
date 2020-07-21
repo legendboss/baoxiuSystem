@@ -6,7 +6,7 @@ import aside5 from '@/assets/icon/icon_5.svg'
 import aside6 from '@/assets/icon/icon_6.svg'
 
 const menu = [
-    {   
+    {
         title: '维修单',
         key: '/repairOrder',
         icon: aside1,
@@ -39,6 +39,12 @@ const menu = [
     {
         title: '解决方案管理',
         key: '/solution',
+        icon: aside6,
+        auth: [1]
+    },
+    {
+        title: '字典',
+        key: '/dictionary',
         icon: aside6,
         auth: [1]
     }

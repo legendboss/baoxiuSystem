@@ -7,6 +7,7 @@ const UserManage = loadable(() => import(/* webpackChunkName: 'index' */ '@/view
 const KnowledgeBase = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/KnowledgeBase'))
 const Report = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Report'))
 const Solution = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Solution'))
+const Dictionary = loadable(() => import(/* webpackChunkName: 'index' */ '@/views/Dictionary'))
 
 const routes = [
     { path: '/index', exact: true, name: 'Index', component: Index, auth: [1] },
@@ -15,7 +16,8 @@ const routes = [
     { path: '/userManage', exact: true, name: 'UserManage', component: UserManage, auth: [1] },
     { path: '/knowledgeBase', exact: true, name: 'KnowledgeBase', component: KnowledgeBase, auth: [1] },
     { path: '/report', exact: true, name: 'Report', component: Report, auth: [1] },
-    { path: '/solution', exact: true, name: 'Solution', component: Solution, auth: [1] }
+    { path: '/solution', exact: true, name: 'Solution', component: Solution, auth: [1] },
+    { path: '/dictionary', exact: true, name: 'Dictionary', component: Dictionary, auth: [1] }
 ]
 
 export default routes

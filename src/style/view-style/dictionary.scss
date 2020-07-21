@@ -1,0 +1,42 @@
+.dictionary {
+    p {
+        margin: 0;
+    }
+
+    .dictionary-box {
+        padding: 25px 35px;
+        background-color: #fff;
+        margin: 0 !important;
+
+        label {
+            text-align: left;
+            display: inline-block;
+        }
+
+        .ant-input-search {
+            width: 280px;
+            margin-left: 10px;
+        }
+
+        .add-user {
+            margin: 25px 0;
+            width: 130px;
+        }
+    }
+}
+
+.add-zd-modal {
+    .ant-modal {
+        width: 400px !important;
+    }
+
+    .ant-form-item-label {
+        width: 90px;
+    }
+
+    .add-user-sure {
+        margin-top: 25px;
+        float: right;
+        margin-left: 10px;
+    }
+}

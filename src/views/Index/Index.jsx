@@ -98,6 +98,14 @@ class Index extends Component {
                             <p>解决方案管理</p>
                         </div>
                     </Col>
+                    <Col>
+                        <div className='items'>
+                            <a href='#/dictionary'>
+                                <img src={aside6} alt='' />
+                            </a>
+                            <p>字典</p>
+                        </div>
+                    </Col>
                 </Row>
             </Layout>
         )
