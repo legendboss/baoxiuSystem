@@ -4,6 +4,7 @@ import aside3 from '@/assets/icon/icon_3.svg'
 import aside4 from '@/assets/icon/icon_4.svg'
 import aside5 from '@/assets/icon/icon_5.svg'
 import aside6 from '@/assets/icon/icon_6.svg'
+import aside7 from '@/assets/icon/icon_7.svg'
 
 const menu = [
     {
@@ -21,19 +22,19 @@ const menu = [
     {
         title: '用户管理',
         key: '/userManage',
-        icon: aside2,
+        icon: aside5,
         auth: [1]
     },
     {
         title: '知识库',
         key: '/knowledgeBase',
-        icon: aside4,
+        icon: aside2,
         auth: [1]
     },
     {
         title: '报表',
         key: '/report',
-        icon: aside5,
+        icon: aside4,
         auth: [1]
     },
     {
@@ -45,7 +46,7 @@ const menu = [
     {
         title: '字典',
         key: '/dictionary',
-        icon: aside6,
+        icon: aside7,
         auth: [1]
     }
 ]

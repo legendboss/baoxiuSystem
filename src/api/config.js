@@ -1,3 +1,9 @@
 // 考虑到网站可能有好几个域名，所以单独提出来
 
-export const API = 'http://qikeqike.qicp.vip/admin'
+// 测试
+// export const API = 'http://qikeqike.qicp.vip/admin'
+// export const APIPad = 'http://qikeqike.qicp.vip/pad'
+
+// 线上
+export const API = 'http://203.156.231.107:8092/admin'
+export const APIPad = 'http://203.156.231.107:8092/pad'

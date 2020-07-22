@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, DatePicker, Select, Spin, Radio, message } from 'antd'
+import { Layout, DatePicker, Select, Spin, Radio, message, Button } from 'antd'
 import '@/style/view-style/report.scss'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import debounce from 'lodash/debounce'
@@ -290,6 +290,36 @@ export default class Report extends Component {
             .catch(err => {})
     }
 
+    onDownLoadReport = () => {
+        // const { dateTime, orderStatus, engineerValue } = this.state
+        // const model = {
+        //     start: dateTime[0],
+        //     end: dateTime[1],
+        //     orderStatus,
+        //     fixId: engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
+        // }
+        // axios
+        //     .get(`${API}/fixOrderCount`, { params: model })
+        //     .then(res => {
+        //         const barDataArr = res.data.data
+        //         const barData1 = []
+        //         const barData2 = []
+        //         if (res.data.code === 200) {
+        //             barDataArr.forEach(item => {
+        //                 barData1.push(item.count)
+        //                 barData2.push(item.dataStr)
+        //             })
+        //             this.setState({
+        //                 barData: [barData1, barData2],
+        //                 echartsName: '维修单统计'
+        //             })
+        //         } else {
+        //             message.error(res.data.msg)
+        //         }
+        //     })
+        //     .catch(err => {})
+    }
+
     render() {
         const { engineerValue, engineerList, engineerFetching, tabStatus, barData, echartsName, pieData } = this.state
         return (
@@ -334,6 +364,9 @@ export default class Report extends Component {
                                 </Select>
                             </div>
                         )}
+                        <Button className='' onClick={this.onDownLoadReport}>
+                            报表下载
+                        </Button>
                     </div>
                     <div>
                         <Radio.Group defaultValue='a' style={{ marginTop: 40 }} onChange={this.onTabChange}>

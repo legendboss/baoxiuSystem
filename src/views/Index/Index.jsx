@@ -9,6 +9,7 @@ import aside3 from '@/assets/icon/aside3.svg'
 import aside4 from '@/assets/icon/aside4.svg'
 import aside5 from '@/assets/icon/aside5.svg'
 import aside6 from '@/assets/icon/aside6.svg'
+import aside7 from '@/assets/icon/aside7.svg'
 
 const wsNewOrder = new WebSocket(`ws://qikeqike.qicp.vip/newOrder`)
 
@@ -61,7 +62,7 @@ class Index extends Component {
                     <Col>
                         <div className='items'>
                             <a href='#/personManage'>
-                                <img src={aside3} alt='' />
+                                <img src={aside2} alt='' />
                             </a>
                             <p>人员管理</p>
                         </div>
@@ -69,7 +70,7 @@ class Index extends Component {
                     <Col>
                         <div className='items'>
                             <a href='#/userManage'>
-                                <img src={aside2} alt='' />
+                                <img src={aside3} alt='' />
                             </a>
                             <p>用户管理</p>
                         </div>
@@ -101,7 +102,7 @@ class Index extends Component {
                     <Col>
                         <div className='items'>
                             <a href='#/dictionary'>
-                                <img src={aside6} alt='' />
+                                <img src={aside7} alt='' />
                             </a>
                             <p>字典</p>
                         </div>

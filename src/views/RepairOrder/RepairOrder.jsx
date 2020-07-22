@@ -66,7 +66,8 @@ export default class RepairOrder extends Component {
             fixVo: { photos: [] },
             userDevice: {},
             previewVisible: false,
-            previewImage: ''
+            previewImage: '',
+            softNameList: []
         }
         this.fetchRepairPeople = debounce(this.fetchRepairPeople, 800)
     }
@@ -76,6 +77,7 @@ export default class RepairOrder extends Component {
     componentDidMount() {
         // 获取列表
         this.getRepairOrderList()
+        this.getSoftNameList()
     }
 
     // 时间选择
@@ -352,6 +354,23 @@ export default class RepairOrder extends Component {
         })
     }
 
+    // 获取软件名称列表
+    getSoftNameList = () => {
+        axios
+            .get(`${API}/softNameList`, {})
+            .then(res => {
+                const data = res.data.data
+                if (res.data.code === 200) {
+                    this.setState({
+                        softNameList: data
+                    })
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+    }
+
     render() {
         const {
             startPage,
@@ -375,7 +394,8 @@ export default class RepairOrder extends Component {
             fixVo,
             userDevice,
             previewVisible,
-            previewImage
+            previewImage,
+            softNameList
         } = this.state
 
         const columns = [
@@ -588,8 +608,16 @@ export default class RepairOrder extends Component {
                                         <Form.Item
                                             label='软件名称：'
                                             name='softName'
-                                            rules={[{ required: true, message: '请输入软件名称!' }]}>
-                                            <Input placeholder='请输入软件名称' autoComplete='off' />
+                                            rules={[{ required: true, message: '请选择软件名称!' }]}>
+                                            <Select>
+                                                {softNameList.map((item, index) => {
+                                                    return (
+                                                        <Option key={index} value={item}>
+                                                            {item}
+                                                        </Option>
+                                                    )
+                                                })}
+                                            </Select>
                                         </Form.Item>
                                     </Col>
                                 </Row>

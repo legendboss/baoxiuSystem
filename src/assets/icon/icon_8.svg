@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+    <title>icon_ipad_xiaoxi1</title>
+    <desc>Created with Sketch.</desc>
+    <g id="icon_ipad_xiaoxi1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="消息" fill-rule="nonzero">
+            <rect id="矩形" fill="#000000" opacity="0" x="0" y="0" width="20" height="20"></rect>
+            <path d="M16.625,14.5 L16.625,8.875 C16.625,5.625 14.25,2.875 11.125,2.375 L11.125,1.125 C11.125,0.5 10.625,0 10,0 C9.375,0 8.875,0.5 8.875,1.125 L8.875,2.375 C5.75,2.875 3.375,5.625 3.375,8.875 L3.375,14.375 C2.75,14.375 2.25,14.875 2.25,15.5 C2.25,16.125 2.75,16.625 3.375,16.625 L16.75,16.625 C17.375,16.625 17.875,16.125 17.875,15.5 C17.75,15 17.25,14.5 16.625,14.5 Z M14.5,14.5 L5.5,14.5 L5.5,8.875 C5.5,6.375 7.5,4.375 10,4.375 C12.5,4.375 14.5,6.375 14.5,8.875 L14.5,14.5 L14.5,14.5 Z" id="形状" fill="#FFFFFF"></path>
+            <path d="M11.125,17.75 L8.875,17.75 C8.25,17.75 7.75,18.25 7.75,18.875 C7.75,19.5 8.25,20 8.875,20 L11.125,20 C11.75,20 12.25,19.5 12.25,18.875 C12.25,18.25 11.75,17.75 11.125,17.75 L11.125,17.75 Z" id="路径" fill="#96BFFF"></path>
+        </g>
+    </g>
+</svg>
