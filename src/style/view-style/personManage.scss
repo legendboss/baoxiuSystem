@@ -1,44 +1,75 @@
 .personManage {
-  p {
-      margin: 0;
-  }
-
-  .personManage-box {
-    padding: 25px 35px;
-    background-color: #fff;
-    margin: 0 !important;
-  
-    label {
-      text-align: left;
-      display: inline-block;
+    p {
+        margin: 0;
     }
 
-    .ant-input-search {
-      width: 280px;
-      margin-left: 10px;
-    }
+    .personManage-box {
+        padding: 25px 35px;
+        background-color: #fff;
+        margin: 0 !important;
 
-    .add-engineer {
-      margin: 25px 0;
-      width: 130px;
-    }
-  }
+        label {
+            text-align: left;
+            display: inline-block;
+        }
 
-  
+        .ant-input-search {
+            width: 280px;
+            margin-left: 10px;
+        }
+
+        .add-engineer {
+            margin: 25px 0;
+            width: 130px;
+        }
+    }
 }
 
 .add-engineer-modal {
-  .ant-modal {
-    width: 400px !important;
-  }
+    .ant-modal {
+        width: 400px !important;
+    }
 
-  .ant-form-item-label {
-    width: 90px;
-  }
+    .ant-form-item-label {
+        width: 90px;
+    }
 
-  .add-engineer-sure {
-    margin-top: 25px;
-    float: right;
-    margin-left: 10px;
-  }
+    .add-engineer-sure {
+        margin-top: 25px;
+        float: right;
+        margin-left: 10px;
+    }
+}
+
+.repair-detail-modal {
+    .ant-modal {
+        width: 600px !important;
+    }
+
+    .rd-box {
+        max-height: 497px;
+        overflow-y: scroll;
+    }
+
+    .ant-col {
+        margin-bottom: 20px;
+        color: rgba(0, 0, 0, 0.85);
+    }
+
+    .ant-col span:nth-of-type(1) {
+        vertical-align: top;
+        width: 100px;
+        display: inline-block;
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    .ant-col span:nth-of-type(2) {
+        width: 420px;
+        display: inline-block;
+    }
+
+    .ant-form-item-label {
+        width: 90px;
+    }
 }

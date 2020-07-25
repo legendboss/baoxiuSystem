@@ -11,7 +11,6 @@ import {
     Row,
     Col,
     Upload,
-    Spin,
     message,
     Badge,
     Rate,
@@ -20,13 +19,13 @@ import {
 import '@/style/view-style/repairOrder.scss'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import { PlusOutlined } from '@ant-design/icons'
-import debounce from 'lodash/debounce'
 import axios from '@/api'
 import { API } from '@/api/config'
 import moment from 'moment'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
+const { Search } = Input
 
 function getBase64(file) {
     return new Promise((resolve, reject) => {
@@ -50,12 +49,7 @@ export default class RepairOrder extends Component {
             total: 0,
             listLoading: false,
             addRepairVisible: false,
-            repairPeopleValue: [],
-            fetching: false,
-            repairPeopleList: [],
-            engineerValue: [],
             engineerList: [],
-            engineerFetching: false,
             fileList: [],
             showEngineer: false,
             sysType: '', // 系统类型
@@ -67,9 +61,9 @@ export default class RepairOrder extends Component {
             userDevice: {},
             previewVisible: false,
             previewImage: '',
-            softNameList: []
+            softNameList: [],
+            addressList: []
         }
-        this.fetchRepairPeople = debounce(this.fetchRepairPeople, 800)
     }
 
     formRef = React.createRef()
@@ -78,6 +72,7 @@ export default class RepairOrder extends Component {
         // 获取列表
         this.getRepairOrderList()
         this.getSoftNameList()
+        this.fetchEngineer()
     }
 
     // 时间选择
@@ -166,12 +161,10 @@ export default class RepairOrder extends Component {
     }
 
     // 添加维修单
-    // 报修人select
-    fetchRepairPeople = value => {
-        console.log('fetching user', value)
-        this.setState({ repairPeopleList: [], fetching: true })
+    // 电话输入搜索
+    onPhoneChange = e => {
         const model = {
-            name: value,
+            phone: e,
             role: 2
         }
         axios
@@ -179,37 +172,14 @@ export default class RepairOrder extends Component {
             .then(res => {
                 const Data = res.data.data
                 if (res.data.code === 200) {
-                    if (Data.length > 0) {
-                        this.setState({ repairPeopleList: Data, fetching: false })
-                    } else {
-                        this.setState({
-                            repairPeopleValue: value,
-                            repairPeopleList: [{ id: 0, name: value }],
-                            fetching: false
-                        })
-                    }
+                    this.setState({
+                        addressList: Data
+                    })
                 } else {
                     message.error(res.data.msg)
                 }
             })
             .catch(err => {})
-    }
-
-    repairPeopleChange = value => {
-        const { repairPeopleList } = this.state
-        if (value[0] && value[0].key !== '0') {
-            // 回显数据
-            const showData = repairPeopleList.filter(item => item.id.toString() === value[0].key)
-            this.formRef.current.setFieldsValue({
-                contractPhone: showData[0].phone,
-                address: showData[0].address
-            })
-        }
-        this.setState({
-            repairPeopleValue: value,
-            repairPeopleList: [],
-            fetching: false
-        })
     }
 
     // 系统类型 选择select
@@ -223,10 +193,8 @@ export default class RepairOrder extends Component {
     handleUpChange = ({ fileList }) => this.setState({ fileList })
 
     // 工程师select
-    fetchEngineer = value => {
-        this.setState({ engineerList: [], engineerFetching: true })
+    fetchEngineer = () => {
         const model = {
-            name: value,
             role: 1
         }
         axios
@@ -234,28 +202,12 @@ export default class RepairOrder extends Component {
             .then(res => {
                 const Data = res.data.data
                 if (res.data.code === 200) {
-                    if (Data.length > 0) {
-                        this.setState({ engineerList: Data, engineerFetching: false })
-                    } else {
-                        this.setState({
-                            engineerValue: value,
-                            engineerList: [{ id: 0, name: value }],
-                            engineerFetching: false
-                        })
-                    }
+                    this.setState({ engineerList: Data })
                 } else {
                     message.error(res.data.msg)
                 }
             })
             .catch(err => {})
-    }
-
-    engineerChange = value => {
-        this.setState({
-            engineerValue: value,
-            engineerList: [],
-            engineerFetching: false
-        })
     }
 
     // model 确定
@@ -278,10 +230,9 @@ export default class RepairOrder extends Component {
             applicationPhoto: photo,
             content: e.content,
             contractPhone: e.contractPhone,
-            contractId: e.contractName ? e.contractName[0].key : '', // 用户
-            contractName: e.contractName ? e.contractName[0].label : '',
-            fixId: e.engineerName ? e.engineerName[0].key : '', // 工程师
-            fixName: e.engineerName ? e.engineerName[0].label : '',
+            contractName: e.contractName,
+            fixId: e.engineerName ? e.engineerName.key[0] : '', // 工程师
+            fixName: e.engineerName ? e.engineerName.key[1] : '',
             fixType: e.fixType,
             softName: e.softName || '',
             source: 0,
@@ -378,12 +329,6 @@ export default class RepairOrder extends Component {
             total,
             listLoading,
             addRepairVisible,
-            repairPeopleValue,
-            repairPeopleList,
-            fetching,
-            engineerValue,
-            engineerList,
-            engineerFetching,
             fileList,
             showEngineer,
             sysType,
@@ -395,7 +340,9 @@ export default class RepairOrder extends Component {
             userDevice,
             previewVisible,
             previewImage,
-            softNameList
+            softNameList,
+            addressList,
+            engineerList
         } = this.state
 
         const columns = [
@@ -534,19 +481,7 @@ export default class RepairOrder extends Component {
                                         label='报修人：'
                                         name='contractName'
                                         rules={[{ required: true, message: '请输入报修人!' }]}>
-                                        <Select
-                                            mode='multiple'
-                                            placeholder='请输入报修人'
-                                            labelInValue
-                                            value={repairPeopleValue}
-                                            notFoundContent={fetching ? <Spin size='small' /> : null}
-                                            filterOption={false}
-                                            onSearch={this.fetchRepairPeople}
-                                            onChange={this.repairPeopleChange}>
-                                            {repairPeopleList.map(d => (
-                                                <Option key={d.id}>{d.name}</Option>
-                                            ))}
-                                        </Select>
+                                        <Input placeholder='请输入报修人' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -554,7 +489,11 @@ export default class RepairOrder extends Component {
                                         label='联系电话：'
                                         name='contractPhone'
                                         rules={[{ required: true, message: '请输入联系电话!' }]}>
-                                        <Input placeholder='请输入联系电话' autoComplete='off' />
+                                        <Search
+                                            placeholder='请输入联系电话'
+                                            autoComplete='off'
+                                            onSearch={this.onPhoneChange}
+                                        />
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -572,7 +511,15 @@ export default class RepairOrder extends Component {
                                         label='维修地址：'
                                         name='address'
                                         rules={[{ required: true, message: '请输入维修地址!' }]}>
-                                        <Input placeholder='请输入维修地址' autoComplete='off' />
+                                        <Select placeholder='请选择维修地址'>
+                                            {addressList.map(item => {
+                                                return (
+                                                    <Option key={item.id} value={item.address}>
+                                                        {item.address}
+                                                    </Option>
+                                                )
+                                            })}
+                                        </Select>
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -650,19 +597,15 @@ export default class RepairOrder extends Component {
                                             <Form.Item
                                                 label='添加工程师：'
                                                 name='engineerName'
-                                                rules={[{ required: true, message: '请输入工程师!' }]}>
-                                                <Select
-                                                    mode='multiple'
-                                                    placeholder=''
-                                                    labelInValue
-                                                    value={engineerValue}
-                                                    notFoundContent={engineerFetching ? <Spin size='small' /> : null}
-                                                    filterOption={false}
-                                                    onSearch={this.fetchEngineer}
-                                                    onChange={this.engineerChange}>
-                                                    {engineerList.map(d => (
-                                                        <Option key={d.id}>{d.name}</Option>
-                                                    ))}
+                                                rules={[{ required: true, message: '请选择工程师!' }]}>
+                                                <Select placeholder='请选择工程师' labelInValue>
+                                                    {engineerList.map(item => {
+                                                        return (
+                                                            <Option key={item.id} value={[item.id, item.name]}>
+                                                                {item.name}
+                                                            </Option>
+                                                        )
+                                                    })}
                                                 </Select>
                                             </Form.Item>
                                         </Col>

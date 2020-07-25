@@ -308,10 +308,7 @@ export default class UserManage extends Component {
                                     <Form.Item
                                         label='手机号：'
                                         name='phone'
-                                        rules={[
-                                            { required: true, message: '请输入正确手机号!' },
-                                            { pattern: /^1[3|4|5|7|8][0-9]\d{8}$/, message: '请输入正确手机号' }
-                                        ]}>
+                                        rules={[{ required: true, message: '请输入正确手机号!' }]}>
                                         <Input placeholder='请输入手机号' autoComplete='off' />
                                     </Form.Item>
                                 </Col>

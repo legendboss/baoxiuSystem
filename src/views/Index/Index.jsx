@@ -12,6 +12,7 @@ import aside6 from '@/assets/icon/aside6.svg'
 import aside7 from '@/assets/icon/aside7.svg'
 
 const wsNewOrder = new WebSocket(`ws://qikeqike.qicp.vip/newOrder`)
+// const wsNewOrder = new WebSocket(`ws://172.16.2.218:8092/newOrder`)
 
 class Index extends Component {
     state = {

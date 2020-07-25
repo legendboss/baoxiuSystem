@@ -16,7 +16,9 @@ export default class PersonManage extends Component {
             total: 0,
             listLoading: false,
             addEngineerVisible: false,
-            sureLoading: false
+            sureLoading: false,
+            reportVisible: false,
+            reportData: {}
         }
     }
 
@@ -122,8 +124,36 @@ export default class PersonManage extends Component {
         this.formRef.current.resetFields()
     }
 
+    // 查看月报
+    onSeeReport = id => {
+        this.setState({ reportVisible: true })
+        axios
+            .delete(`${API}/ShowMonthReport?uid=${id}`)
+            .then(res => {
+                if (res.data.code === 200) {
+                    const newReportData = res.data.data
+                    newReportData.addTime = newReportData.addTime.slice(0, 10)
+                    this.setState({
+                        reportData: newReportData
+                    })
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+    }
+
     render() {
-        const { startPage, listData, total, listLoading, addEngineerVisible, sureLoading } = this.state
+        const {
+            startPage,
+            listData,
+            total,
+            listLoading,
+            addEngineerVisible,
+            sureLoading,
+            reportData,
+            reportVisible
+        } = this.state
 
         const columns = [
             {
@@ -179,6 +209,14 @@ export default class PersonManage extends Component {
                                 </Button>
                             </Popconfirm>
                         )}
+                        <Button
+                            type='link'
+                            style={{ padding: '0' }}
+                            onClick={() => {
+                                this.onSeeReport(record.id)
+                            }}>
+                            查看月报
+                        </Button>
                     </Space>
                 )
             }
@@ -209,7 +247,7 @@ export default class PersonManage extends Component {
                             current: startPage,
                             total: total,
                             showTotal: total => `共 ${total} 条`,
-                            pageSizeOptions: [10, 20],
+                            pageSizeOptions: [10, 24],
                             onChange: (page, pageSize) => this.handleTableChange(page, pageSize)
                         }}
                     />
@@ -256,6 +294,67 @@ export default class PersonManage extends Component {
                                 </Button>
                             </Form.Item>
                         </Form>
+                    </div>
+                </Modal>
+
+                {/* 查看月报 */}
+                <Modal
+                    wrapClassName='repair-detail-modal'
+                    title='月报详情'
+                    visible={reportVisible}
+                    onCancel={() => {
+                        this.setState({ reportVisible: false })
+                    }}
+                    footer={null}>
+                    <div className='rd-box'>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>姓名：</span>
+                                <span>{reportData.userName}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>本月完成量：</span>
+                                <span>{reportData.total}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>自我评价：</span>
+                                <span>{reportData.selfEvaluation}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>日期：</span>
+                                <span>{reportData.addTime}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>外派记录：</span>
+                                <span>{reportData.outReport}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>问题难点分析：</span>
+                                <span>{reportData.question}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>经验分享：</span>
+                                <span>{reportData.suggestion}</span>
+                            </Col>
+                        </Row>
+                        <Row span={24}>
+                            <Col span={24}>
+                                <span>总结：</span>
+                                <span>{reportData.summary}</span>
+                            </Col>
+                        </Row>
                     </div>
                 </Modal>
             </Layout>
