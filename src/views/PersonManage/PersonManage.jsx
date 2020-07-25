@@ -299,7 +299,7 @@ export default class PersonManage extends Component {
 
                 {/* 查看月报 */}
                 <Modal
-                    wrapClassName='repair-detail-modal'
+                    wrapClassName='report-detail-modal'
                     title='月报详情'
                     visible={reportVisible}
                     onCancel={() => {

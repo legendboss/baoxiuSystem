@@ -61,8 +61,7 @@ export default class RepairOrder extends Component {
             userDevice: {},
             previewVisible: false,
             previewImage: '',
-            softNameList: [],
-            addressList: []
+            softNameList: []
         }
     }
 
@@ -172,8 +171,9 @@ export default class RepairOrder extends Component {
             .then(res => {
                 const Data = res.data.data
                 if (res.data.code === 200) {
-                    this.setState({
-                        addressList: Data
+                    // 回显地址
+                    this.formRef.current.setFieldsValue({
+                        address: Data.length > 0 ? Data[0].address : ''
                     })
                 } else {
                     message.error(res.data.msg)
@@ -341,7 +341,6 @@ export default class RepairOrder extends Component {
             previewVisible,
             previewImage,
             softNameList,
-            addressList,
             engineerList
         } = this.state
 
@@ -511,15 +510,7 @@ export default class RepairOrder extends Component {
                                         label='维修地址：'
                                         name='address'
                                         rules={[{ required: true, message: '请输入维修地址!' }]}>
-                                        <Select placeholder='请选择维修地址'>
-                                            {addressList.map(item => {
-                                                return (
-                                                    <Option key={item.id} value={item.address}>
-                                                        {item.address}
-                                                    </Option>
-                                                )
-                                            })}
-                                        </Select>
+                                        <Input placeholder='请输入维修地址' autoComplete='off' />
                                     </Form.Item>
                                 </Col>
                             </Row>
