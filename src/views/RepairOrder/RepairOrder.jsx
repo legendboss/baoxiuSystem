@@ -705,6 +705,15 @@ export default class RepairOrder extends Component {
                                 )}
                             </div>
                         </Row>
+                        <div>
+                            <Divider />
+                            <Row span={24}>
+                                <Col span={24}>
+                                    <span>维修方案：</span>
+                                    <span style={{ width: '450px' }}>{contractVo.fixContent || '无'}</span>
+                                </Col>
+                            </Row>
+                        </div>
                         {fixVo !== null && (
                             <div>
                                 <Divider />

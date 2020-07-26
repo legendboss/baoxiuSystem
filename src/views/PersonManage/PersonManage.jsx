@@ -209,14 +209,16 @@ export default class PersonManage extends Component {
                                 </Button>
                             </Popconfirm>
                         )}
-                        <Button
-                            type='link'
-                            style={{ padding: '0' }}
-                            onClick={() => {
-                                this.onSeeReport(record.id)
-                            }}>
-                            查看月报
-                        </Button>
+                        {record.flag && (
+                            <Button
+                                type='link'
+                                style={{ padding: '0' }}
+                                onClick={() => {
+                                    this.onSeeReport(record.id)
+                                }}>
+                                查看月报
+                            </Button>
+                        )}
                     </Space>
                 )
             }
