@@ -354,6 +354,10 @@ export default class RepairOrder extends Component {
                 dataIndex: 'addTimeStr'
             },
             {
+                title: '联系电话',
+                dataIndex: 'phone'
+            },
+            {
                 title: '内容',
                 dataIndex: 'content'
             },
