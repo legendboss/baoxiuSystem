@@ -355,7 +355,7 @@ export default class RepairOrder extends Component {
             },
             {
                 title: '联系电话',
-                dataIndex: 'phone'
+                dataIndex: 'contractPhone'
             },
             {
                 title: '内容',
