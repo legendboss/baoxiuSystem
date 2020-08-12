@@ -291,33 +291,9 @@ export default class Report extends Component {
     }
 
     onDownLoadReport = () => {
-        // const { dateTime, orderStatus, engineerValue } = this.state
-        // const model = {
-        //     start: dateTime[0],
-        //     end: dateTime[1],
-        //     orderStatus,
-        //     fixId: engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
-        // }
-        // axios
-        //     .get(`${API}/fixOrderCount`, { params: model })
-        //     .then(res => {
-        //         const barDataArr = res.data.data
-        //         const barData1 = []
-        //         const barData2 = []
-        //         if (res.data.code === 200) {
-        //             barDataArr.forEach(item => {
-        //                 barData1.push(item.count)
-        //                 barData2.push(item.dataStr)
-        //             })
-        //             this.setState({
-        //                 barData: [barData1, barData2],
-        //                 echartsName: '维修单统计'
-        //             })
-        //         } else {
-        //             message.error(res.data.msg)
-        //         }
-        //     })
-        //     .catch(err => {})
+        const { dateTime, orderStatus, engineerValue } = this.state
+        const fixId = engineerValue.length !== 0 ? (engineerValue.key !== '0' ? engineerValue.key : '') : '' // 工程师
+        window.location.href = `${API}/fixOrderCountDownLoad?start=${dateTime[0]}&end=${dateTime[1]}&orderStatus=${orderStatus}&fixId=${fixId}`
     }
 
     render() {

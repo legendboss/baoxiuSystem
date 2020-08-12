@@ -14,7 +14,9 @@ import {
     message,
     Badge,
     Rate,
-    Divider
+    Divider,
+    Space,
+    Popconfirm
 } from 'antd'
 import '@/style/view-style/repairOrder.scss'
 import locale from 'antd/es/date-picker/locale/zh_CN'
@@ -61,7 +63,8 @@ export default class RepairOrder extends Component {
             userDevice: {},
             previewVisible: false,
             previewImage: '',
-            softNameList: []
+            softNameList: [],
+            contractPhone: ''
         }
     }
 
@@ -111,11 +114,23 @@ export default class RepairOrder extends Component {
         )
     }
 
+    // 分机号码
+    contractPhoneChange = e => {
+        this.setState(
+            {
+                contractPhone: e.target.value
+            },
+            () => {
+                this.getRepairOrderList()
+            }
+        )
+    }
+
     // 获取维修单列表
     getRepairOrderList = () => {
-        const { dateTime, orderStatus, type, startPage, pageSize } = this.state
+        const { dateTime, orderStatus, type, startPage, pageSize, contractPhone } = this.state
         const model = {
-            contractPhone: '',
+            contractPhone,
             fixId: '',
             orderStatus,
             type,
@@ -152,6 +167,19 @@ export default class RepairOrder extends Component {
             {
                 startPage: page,
                 pageSize: pageSize
+            },
+            () => {
+                this.getRepairOrderList()
+            }
+        )
+    }
+
+    // 刷新
+    onRefresh = () => {
+        this.setState(
+            {
+                startPage: 1,
+                pageSize: 10
             },
             () => {
                 this.getRepairOrderList()
@@ -322,6 +350,20 @@ export default class RepairOrder extends Component {
             .catch(err => {})
     }
 
+    onDeleteOrder = id => {
+        axios
+            .delete(`${API}/delOrder?id=${id}`)
+            .then(res => {
+                if (res.data.code === 200) {
+                    message.success('删除成功！')
+                    this.getRepairOrderList()
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+    }
+
     render() {
         const {
             startPage,
@@ -341,7 +383,8 @@ export default class RepairOrder extends Component {
             previewVisible,
             previewImage,
             softNameList,
-            engineerList
+            engineerList,
+            contractPhone
         } = this.state
 
         const columns = [
@@ -406,14 +449,29 @@ export default class RepairOrder extends Component {
             {
                 title: '操作',
                 render: (text, record) => (
-                    <Button
-                        type='link'
-                        style={{ padding: '0' }}
-                        onClick={() => {
-                            this.onOrderDetail(record.id)
-                        }}>
-                        详情
-                    </Button>
+                    <Space>
+                        <Button
+                            type='link'
+                            style={{ padding: '0' }}
+                            onClick={() => {
+                                this.onOrderDetail(record.id)
+                            }}>
+                            详情
+                        </Button>
+                        {record.orderStatus !== 2 && (
+                            <Popconfirm
+                                title='确定删除吗？'
+                                onConfirm={() => {
+                                    this.onDeleteOrder(record.id)
+                                }}
+                                okText='确定'
+                                cancelText='取消'>
+                                <Button type='link' style={{ padding: '0' }}>
+                                    删除
+                                </Button>
+                            </Popconfirm>
+                        )}
+                    </Space>
                 )
             }
         ]
@@ -444,8 +502,29 @@ export default class RepairOrder extends Component {
                             <Option value='0'>紧急</Option>
                             <Option value='1'>一般</Option>
                         </Select>
-                        <label htmlFor='订单状态'>时间: </label>
-                        <RangePicker format='YYYY-MM-DD' showTime locale={locale} onChange={this.onRageChange} />
+                        <div style={{ display: 'inline-block', marginTop: '20px' }}>
+                            <label htmlFor='订单状态'>时间: </label>
+                            <RangePicker format='YYYY-MM-DD' showTime locale={locale} onChange={this.onRageChange} />
+                        </div>
+                        <div style={{ display: 'inline-block', marginTop: '20px' }}>
+                            <label htmlFor='分机号' style={{ width: '70px' }}>
+                                分机号:{' '}
+                            </label>
+                            <Input
+                                style={{ width: 200 }}
+                                placeholder='请输入分机号'
+                                type='text'
+                                value={contractPhone}
+                                onChange={this.contractPhoneChange}
+                            />
+                            <Button
+                                type='primary'
+                                onClick={() => {
+                                    this.onRefresh()
+                                }}>
+                                刷新
+                            </Button>
+                        </div>
                     </div>
                     <Button
                         className='add-repair'
