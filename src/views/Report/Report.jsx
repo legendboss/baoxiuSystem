@@ -305,7 +305,6 @@ export default class Report extends Component {
                         <label htmlFor='工程师'>工程师: </label>
                         <Select
                             showSearch
-                            allowClear
                             placeholder=''
                             labelInValue
                             value={engineerValue}
