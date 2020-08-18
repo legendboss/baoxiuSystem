@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Button, Modal, Table, Form, Input, Row, Col, Popconfirm, Select, Tooltip, message } from 'antd'
+import { Layout, Button, Modal, Table, Form, Input, Row, Col, Popconfirm, Select, Tooltip, message, Space } from 'antd'
 import '@/style/view-style/knowledgeBase.scss'
 import axios from '@/api'
 import { API } from '@/api/config'
@@ -17,7 +17,8 @@ export default class KnowledgeBase extends Component {
             total: 0,
             listLoading: false,
             addUseCasesVisible: false,
-            addCasesSureLoading: false
+            addCasesSureLoading: false,
+            currentId: 0
         }
     }
 
@@ -115,39 +116,107 @@ export default class KnowledgeBase extends Component {
     // model 确定
     arHandleOk = e => {
         console.log(e)
-        const model = {
-            content: e.mSolveWay,
-            keyWord: e.mKeyword.toString(),
-            type: e.mType
+        const { currentId } = this.state
+        let model = {}
+        if (currentId > 0) {
+            // 编辑
+            model = {
+                id: currentId,
+                result: e.mSolveWay,
+                keyWord: e.mKeyword.toString(),
+                type: e.mType
+            }
+        } else {
+            model = {
+                content: e.mSolveWay,
+                keyWord: e.mKeyword.toString(),
+                type: e.mType
+            }
         }
         this.setState({ addCasesSureLoading: true })
-        axios
-            .get(`${API}/knowledgeAdd`, { params: model })
-            .then(res => {
-                if (res.data.code === 200) {
-                    message.success('添加成功！')
-                    this.onCloseResetModel()
-                    this.getKnowledgeList()
-                } else {
-                    message.error(res.data.msg)
-                }
-                this.setState({ addCasesSureLoading: false })
-            })
-            .catch(err => {
-                this.setState({ addCasesSureLoading: false })
-            })
+        if (currentId > 0) {
+            axios
+                .post(`${API}/knowledgeEdit`, model)
+                .then(res => {
+                    if (res.data.code === 200) {
+                        message.success('添加成功！')
+                        this.onCloseResetModel()
+                        this.getKnowledgeList()
+                    } else {
+                        message.error(res.data.msg)
+                    }
+                    this.setState({ addCasesSureLoading: false })
+                })
+                .catch(err => {
+                    this.setState({ addCasesSureLoading: false })
+                })
+        } else {
+            axios
+                .get(`${API}/knowledgeAdd`, { params: model })
+                .then(res => {
+                    if (res.data.code === 200) {
+                        message.success('添加成功！')
+                        this.onCloseResetModel()
+                        this.getKnowledgeList()
+                    } else {
+                        message.error(res.data.msg)
+                    }
+                    this.setState({ addCasesSureLoading: false })
+                })
+                .catch(err => {
+                    this.setState({ addCasesSureLoading: false })
+                })
+        }
     }
 
     // 关闭销毁弹窗
     onCloseResetModel = () => {
         this.setState({
-            addUseCasesVisible: false
+            addUseCasesVisible: false,
+            currentId: 0
         })
         this.formRef.current.resetFields()
     }
 
+    // 编辑，获取知识库详情
+    onKnowledgeDetail = id => {
+        this.setState({
+            currentId: id
+        })
+        const model = {
+            id
+        }
+        axios
+            .get(`${API}/knowledgeInfo`, { params: model })
+            .then(res => {
+                if (res.data.code === 200) {
+                    const Data = res.data.data
+                    this.setState({
+                        addUseCasesVisible: true
+                    })
+                    // 回显知识库
+                    this.formRef.current.setFieldsValue({
+                        mType: Data.type.toString() || '',
+                        mKeyword: Data.keyWord || '',
+                        mSolveWay: Data.result || ''
+                    })
+                } else {
+                    message.error(res.data.msg)
+                }
+            })
+            .catch(err => {})
+    }
+
     render() {
-        const { startPage, listData, total, listLoading, addUseCasesVisible, addCasesSureLoading } = this.state
+        const {
+            startPage,
+            listData,
+            total,
+            listLoading,
+            addUseCasesVisible,
+            addCasesSureLoading,
+            currentId
+        } = this.state
 
         const columns = [
             {
@@ -172,17 +241,27 @@ export default class KnowledgeBase extends Component {
                 title: '操作',
                 key: 'action',
                 render: (text, record) => (
-                    <Popconfirm
-                        title='确定删除该用例吗？'
-                        onConfirm={() => {
-                            this.onDeleteCases(record.id)
-                        }}
-                        okText='确定'
-                        cancelText='取消'>
-                        <Button type='link' style={{ padding: '0' }}>
-                            删除
+                    <Space>
+                        <Button
+                            type='link'
+                            style={{ padding: '0' }}
+                            onClick={() => {
+                                this.onKnowledgeDetail(record.id)
+                            }}>
+                            编辑
                         </Button>
-                    </Popconfirm>
+                        <Popconfirm
+                            title='确定删除该用例吗？'
+                            onConfirm={() => {
+                                this.onDeleteCases(record.id)
+                            }}
+                            okText='确定'
+                            cancelText='取消'>
+                            <Button type='link' style={{ padding: '0' }}>
+                                删除
+                            </Button>
+                        </Popconfirm>
+                    </Space>
                 )
             }
         ]
@@ -228,7 +307,7 @@ export default class KnowledgeBase extends Component {
                 </div>
                 <Modal
                     wrapClassName='add-useCases-modal'
-                    title='添加知识库'
+                    title={`${currentId > 0 ? '编辑知识库' : '添加知识库'}`}
                     visible={addUseCasesVisible}
                     onCancel={this.onCloseResetModel}
                     footer={null}>

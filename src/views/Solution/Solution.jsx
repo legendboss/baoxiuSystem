@@ -188,6 +188,10 @@ export default class Solution extends Component {
                 dataIndex: 'softName'
             },
             {
+                title: '问题描述',
+                dataIndex: 'content'
+            },
+            {
                 title: '解决方案',
                 dataIndex: 'fixContent'
             },

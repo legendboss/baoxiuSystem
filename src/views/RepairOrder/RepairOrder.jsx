@@ -27,7 +27,7 @@ import moment from 'moment'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
-const { Search } = Input
+const { Search, TextArea } = Input
 
 function getBase64(file) {
     return new Promise((resolve, reject) => {
@@ -64,7 +64,11 @@ export default class RepairOrder extends Component {
             previewVisible: false,
             previewImage: '',
             softNameList: [],
-            contractPhone: ''
+            contractPhone: '',
+            score: 0,
+            comment: '',
+            ifEvaluate: false,
+            evaluateSureLoading: false
         }
     }
 
@@ -312,6 +316,75 @@ export default class RepairOrder extends Component {
             .catch(err => {})
     }
 
+    // 回访打开
+    onEvaluate = id => {
+        this.setState(
+            {
+                ifEvaluate: true
+            },
+            () => {
+                this.onOrderDetail(id)
+            }
+        )
+    }
+
+    handleScoreChange = e => {
+        this.setState({
+            score: e
+        })
+    }
+
+    handleCommentChange = e => {
+        console.log(e.target.value)
+        this.setState({
+            comment: e.target.value
+        })
+    }
+
+    // 回访确定
+    onEvaluateSure = () => {
+        const { score, comment, orderDetailInfo } = this.state
+        if (score < 1) {
+            message.error('请评分！')
+            return false
+        }
+        if (comment === '') {
+            message.error('请填写回访记录！')
+            return false
+        }
+
+        this.setState({ evaluateSureLoading: true })
+        const model = {
+            id: orderDetailInfo.id,
+            comment,
+            score
+        }
+        axios
+            .post(`${API}/scoreFinishOrder`, model)
+            .then(res => {
+                if (res.data.code === 200) {
+                    this.getRepairOrderList()
+                    this.onCloseDetailModel()
+                } else {
+                    message.error(res.data.msg)
+                }
+                this.setState({ evaluateSureLoading: false })
+            })
+            .catch(err => {
+                this.setState({ evaluateSureLoading: false })
+            })
+    }
+
+    //
+    onCloseDetailModel = () => {
+        this.setState({
+            repairDetailVisible: false,
+            ifEvaluate: false,
+            score: 0,
+            comment: ''
+        })
+    }
+
     // 图片预览
     handlePreview = async file => {
         console.log(file)
@@ -384,7 +457,11 @@ export default class RepairOrder extends Component {
             previewImage,
             softNameList,
             engineerList,
-            contractPhone
+            contractPhone,
+            score,
+            comment,
+            ifEvaluate,
+            evaluateSureLoading
         } = this.state
 
         const columns = [
@@ -421,7 +498,7 @@ export default class RepairOrder extends Component {
                 dataIndex: 'orderStatusStr',
                 render: (text, record) => {
                     let statusStr = ''
-                    // 0未接单 1已接单 2 已完成 3 已取消
+                    // 0未接单 1已接单 2 已完成 3 已取消 4 已回仿
                     switch (record.orderStatus) {
                         case 0:
                             statusStr = 'default'
@@ -434,6 +511,9 @@ export default class RepairOrder extends Component {
                             break
                         case 3:
                             statusStr = 'error'
+                            break
+                        case 4:
+                            statusStr = 'success'
                             break
 
                         default:
@@ -471,6 +551,16 @@ export default class RepairOrder extends Component {
                                 </Button>
                             </Popconfirm>
                         )}
+                        {record.orderStatus === 2 && (
+                            <Button
+                                type='link'
+                                style={{ padding: '0' }}
+                                onClick={() => {
+                                    this.onEvaluate(record.id)
+                                }}>
+                                回访
+                            </Button>
+                        )}
                     </Space>
                 )
             }
@@ -494,6 +584,7 @@ export default class RepairOrder extends Component {
                             <Option value='1'>已接单</Option>
                             <Option value='2'>已完成</Option>
                             <Option value='3'>已取消</Option>
+                            <Option value='4'>已回访</Option>
                         </Select>
                         {/* 类型 0紧急 1一般 */}
                         <label htmlFor='类型'>类型: </label>
@@ -702,12 +793,25 @@ export default class RepairOrder extends Component {
                 {/* 详情 */}
                 <Modal
                     wrapClassName='repair-detail-modal'
-                    title='详情'
+                    title={`${ifEvaluate ? '回访' : '详情'}`}
                     visible={repairDetailVisible}
                     onCancel={() => {
-                        this.setState({ repairDetailVisible: false })
+                        this.onCloseDetailModel()
                     }}
-                    footer={null}>
+                    footer={
+                        <div>
+                            {ifEvaluate ? (
+                                <Button
+                                    type='primary'
+                                    className='add-repair-sure'
+                                    disabled={evaluateSureLoading}
+                                    loading={evaluateSureLoading}
+                                    onClick={this.onEvaluateSure}>
+                                    确定
+                                </Button>
+                            ) : null}
+                        </div>
+                    }>
                     <div className='rd-box'>
                         <Row span={24}>
                             <Col span={12}>
@@ -757,13 +861,44 @@ export default class RepairOrder extends Component {
                                 </Col>
                             </Row>
                         )}
-                        {orderDetailInfo.orderStatus === 2 && (
-                            <Row span={24}>
-                                <Col span={12}>
-                                    <span>用户评价：</span>
-                                    <Rate defaultValue={contractVo.score} />
-                                </Col>
-                            </Row>
+                        {orderDetailInfo.orderStatus === 2 && ifEvaluate && (
+                            <div>
+                                <Row span={24}>
+                                    <Col span={12}>
+                                        <span>用户评价：</span>
+                                        <Rate
+                                            value={score}
+                                            onChange={this.handleScoreChange}
+                                            defaultValue={contractVo.score}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row span={24}>
+                                    <Col span={20}>
+                                        <span>回访记录：</span>
+                                        <TextArea
+                                            value={comment}
+                                            onChange={this.handleCommentChange}
+                                            rows={6}></TextArea>
+                                    </Col>
+                                </Row>
+                            </div>
+                        )}
+                        {orderDetailInfo.orderStatus === 4 && (
+                            <div>
+                                <Row span={24}>
+                                    <Col span={12}>
+                                        <span>用户评价：</span>
+                                        <Rate disabled defaultValue={contractVo.score} />
+                                    </Col>
+                                </Row>
+                                <Row span={24}>
+                                    <Col span={24}>
+                                        <span>回访记录：</span>
+                                        <span style={{ width: '450px' }}>{contractVo.comment || '无'}</span>
+                                    </Col>
+                                </Row>
+                            </div>
                         )}
                         <Row span={24}>
                             <span>附件：</span>
@@ -788,17 +923,15 @@ export default class RepairOrder extends Component {
                                 )}
                             </div>
                         </Row>
-                        <div>
-                            <Divider />
-                            <Row span={24}>
-                                <Col span={24}>
-                                    <span>维修方案：</span>
-                                    <span style={{ width: '450px' }}>{contractVo.fixContent || '无'}</span>
-                                </Col>
-                            </Row>
-                        </div>
                         {fixVo !== null && (
                             <div>
+                                <Divider />
+                                <Row span={24}>
+                                    <Col span={24}>
+                                        <span>维修方案：</span>
+                                        <span style={{ width: '450px' }}>{fixVo.fixContent || '无'}</span>
+                                    </Col>
+                                </Row>
                                 <Divider />
                                 <Row span={24}>
                                     <Col span={12}>
