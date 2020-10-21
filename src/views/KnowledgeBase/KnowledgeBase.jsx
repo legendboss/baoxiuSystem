@@ -124,13 +124,15 @@ export default class KnowledgeBase extends Component {
                 id: currentId,
                 result: e.mSolveWay,
                 keyWord: e.mKeyword.toString(),
-                type: e.mType
+                type: e.mType,
+                questionStr: e.mQuestion
             }
         } else {
             model = {
                 content: e.mSolveWay,
                 keyWord: e.mKeyword.toString(),
-                type: e.mType
+                type: e.mType,
+                questionStr: e.mQuestion
             }
         }
         this.setState({ addCasesSureLoading: true })
@@ -198,7 +200,8 @@ export default class KnowledgeBase extends Component {
                     this.formRef.current.setFieldsValue({
                         mType: Data.type.toString() || '',
                         mKeyword: Data.keyWord || '',
-                        mSolveWay: Data.result || ''
+                        mSolveWay: Data.result || '',
+                        mQuestion: Data.question || ''
                     })
                 } else {
                     message.error(res.data.msg)
@@ -226,6 +229,10 @@ export default class KnowledgeBase extends Component {
             {
                 title: '关键字',
                 dataIndex: 'keyWord'
+            },
+            {
+                title: '问题描述',
+                dataIndex: 'questionStr'
             },
             {
                 title: '解决方法',
@@ -340,6 +347,14 @@ export default class KnowledgeBase extends Component {
                                         label='解决方法：'
                                         name='mSolveWay'
                                         rules={[{ required: true, message: '请输入解决方法!' }]}>
+                                        <Input.TextArea />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={21}>
+                                    <Form.Item
+                                        label='问题描述：'
+                                        name='mQuestion'
+                                        rules={[{ required: true, message: '请输入问题描述!' }]}>
                                         <Input.TextArea />
                                     </Form.Item>
                                 </Col>

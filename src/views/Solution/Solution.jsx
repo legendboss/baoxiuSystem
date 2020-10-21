@@ -89,7 +89,8 @@ export default class Solution extends Component {
         const model = {
             content: e.fixContent,
             keyWord: e.mKeyword.toString(),
-            type: e.type
+            type: e.type,
+            questionStr: e.mQuestion
         }
         this.setState({ solutionSureLoading: true })
         axios
@@ -283,6 +284,14 @@ export default class Solution extends Component {
                                         label='解决方法：'
                                         name='fixContent'
                                         rules={[{ required: true, message: '请输入解决方法!' }]}>
+                                        <Input.TextArea />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={21}>
+                                    <Form.Item
+                                        label='问题描述：'
+                                        name='mQuestion'
+                                        rules={[{ required: true, message: '请输入问题描述!' }]}>
                                         <Input.TextArea />
                                     </Form.Item>
                                 </Col>
